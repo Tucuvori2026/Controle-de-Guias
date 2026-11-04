@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestão Fios de Contas PRO - Realtime</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            emerald: {
+              850: '#144533',
+              900: '#1B4332',
+              950: '#0D221A',
+            },
+            executive: {
+              primary: '#2D6A4F',
+              secondary: '#1B4332',
+              accent: '#52B788',
+              gold: '#D4AF37',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
+    .dark ::-webkit-scrollbar-thumb { background: #334155; }
+    html, body { width: 100%; max-width: 100%; overflow-x: hidden; }
+
+    @media (max-width: 767px) {
+      body { padding-bottom: calc(84px + env(safe-area-inset-bottom)) !important; }
+      main { padding-bottom: 24px; min-width: 0; }
+    }
+    @media print {
+      .no-print { display: none !important; }
+      .print-only { display: block !important; }
+      body { background: white !important; color: black !important; }
+    }
+  </style>
+</head>
+<body class="h-full bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 flex flex-col min-h-screen">
+
+  <!-- Header Header Header -->
+  <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 sticky top-0 z-30 shadow-sm no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-executive-primary to-executive-secondary flex items-center justify-center text-white shadow-md shadow-emerald-900/20">
+            <i class="fa-solid fa-gem text-lg"></i>
+          </div>
+          <div>
+            <h1 class="text-lg font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
+              Controle dos Fios de Compra <span class="text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 text-executive-secondary dark:bg-emerald-950 dark:text-emerald-300">TUCUVORI</span>
+            </h1>
+            <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Controle Financeiro</p>
+          </div>
+        </div>
+
+        <div class="flex items-center space-x-3 sm:space-x-4">
+          <div id="firebase-status" class="flex items-center space-x-2 px-3 py-1.5 rounded-full bg-slate-100 dark:bg-slate-800 text-xs font-medium text-slate-600 dark:text-slate-300 transition-all">
+            <span class="relative flex h-2.5 w-2.5">
+              <span id="firebase-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+              <span id="firebase-dot" class="relative inline-flex rounded-full h-2.5 w-2.5 bg-amber-500"></span>
+            </span>
+            <span id="firebase-status-text" class="hidden sm:inline">Conectando...</span>
+          </div>
+
+          <button id="theme-toggle" class="p-2.5 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 rounded-xl hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors focus:outline-none">
+            <i id="theme-toggle-dark-icon" class="fa-solid fa-moon text-lg hidden"></i>
+            <i id="theme-toggle-light-icon" class="fa-solid fa-sun text-lg"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col gap-6">
+
+    <!-- Dashboard Executivo Summary -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-3 sm:gap-4 no-print">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-2 h-full bg-amber-500"></div>
+        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Saldo a Receber</p>
+        <p id="stat-a-receber" class="text-lg sm:text-xl font-black text-amber-600 dark:text-amber-400 mt-1">R$ 0,00</p>
+        <span class="text-[10px] text-slate-400 mt-1 block">Pendente</span>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-2 h-full bg-emerald-500"></div>
+        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Saldo Recebido</p>
+        <p id="stat-recebido" class="text-lg sm:text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1">R$ 0,00</p>
+        <span class="text-[10px] text-slate-400 mt-1 block">Pagamentos Efetuados</span>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+        <div class="absolute top-0 right-0 w-2 h-full bg-blue-500"></div>
+        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Valor Total Vendido</p>
+        <p id="stat-total-compras" class="text-lg sm:text-xl font-black text-blue-600 dark:text-blue-400 mt-1">R$ 0,00</p>
+        <span class="text-[10px] text-slate-400 mt-1 block">Quantidade Vendida</span>
+      </div>
+
+      <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Clientes</p>
+          <i class="fa-solid fa-users text-slate-400 text-xs"></i>
+        </div>
+        <p id="stat-total-clientes" class="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-100 mt-1">0</p>
+        <span id="stat-clientes-em-debito" class="text-[10px] text-amber-500 font-semibold mt-1 block">0 em débito</span>
+      </div>
+
+      <div class="col-span-2 md:col-span-1 bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm">
+        <div class="flex items-center justify-between">
+          <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Catálogo</p>
+          <i class="fa-solid fa-boxes-stacked text-slate-400 text-xs"></i>
+        </div>
+        <p id="stat-total-produtos" class="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-100 mt-1">0</p>
+        <span id="stat-categorias-count" class="text-[10px] text-slate-400 mt-1 block">0 categorias</span>
+      </div>
+    </div>
+
+    <!-- Desktop Navigation Tabs -->
+    <div class="hidden md:flex items-center space-x-1 border-b border-slate-200 dark:border-slate-800 no-print overflow-x-auto">
+      <button onclick="switchTab('clientes')" id="tab-btn-clientes" class="tab-btn active-tab px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-executive-primary text-executive-primary dark:text-emerald-400">
+        <i class="fa-solid fa-user-group"></i> Clientes
+      </button>
+      <button onclick="switchTab('catalogo')" id="tab-btn-catalogo" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        <i class="fa-solid fa-gem"></i> Catálogo de Fios
+      </button>
+      <button onclick="switchTab('lancar-fios')" id="tab-btn-lancar-fios" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        <i class="fa-solid fa-link"></i> Lançar Fios
+      </button>
+      <button onclick="switchTab('quitar')" id="tab-btn-quitar" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        <i class="fa-solid fa-hand-holding-dollar"></i> Quitar Dívidas
+      </button>
+      <button onclick="switchTab('categorias')" id="tab-btn-categorias" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        <i class="fa-solid fa-tags"></i> Categorias
+      </button>
+      <button onclick="switchTab('extrato-geral')" id="tab-btn-extrato-geral" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        <i class="fa-solid fa-receipt"></i> Extrato Geral
+      </button>
+      <button onclick="switchTab('massa')" id="tab-btn-massa" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        <i class="fa-solid fa-file-import"></i> Adição em Massa
+      </button>
+      <button onclick="switchTab('configuracoes')" id="tab-btn-configuracoes" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        <i class="fa-solid fa-gear"></i> Configurações
+      </button>
+    </div>
+
+    <!-- MAIN CONTEÚDO -->
+    <main class="flex-1">
+      
+      <!-- ABA 1: CLIENTES -->
+      <section id="sec-clientes" class="tab-content space-y-6">
+        <div id="view-clientes-lista" class="space-y-4">
+          <div class="flex flex-col lg:flex-row justify-between items-stretch gap-3">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+              <input type="text" id="input-busca-cliente" oninput="renderClientes()" placeholder="Buscar cliente por nome ou telefone..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-executive-primary">
+            </div>
+            
+            <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+              <select id="select-filtro-tipo-cliente" onchange="renderClientes()" class="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                <option value="todos">Todos os Tipos</option>
+                <option value="filho-santo">Filhos de Santo</option>
+                <option value="assistencia">Assistências</option>
+              </select>
+
+              <select id="select-filtro-status-cliente" onchange="renderClientes()" class="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                <option value="todos">Todos Status</option>
+                <option value="debito">Em Débito</option>
+                <option value="quitado">Quitados</option>
+              </select>
+
+              <select id="select-ordem-cliente" onchange="renderClientes()" class="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                <option value="az">Nome: A → Z</option>
+                <option value="maior-debito">Maior Débito</option>
+                <option value="menor-debito">Menor Débito</option>
+              </select>
+
+              <div class="flex gap-2">
+                <button onclick="exportarRelatorioPDF()" class="px-3.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs shadow-sm transition-colors flex items-center justify-center gap-1.5 flex-1 sm:flex-none">
+                  <i class="fa-solid fa-file-pdf"></i> Relatório PDF
+                </button>
+                <button onclick="openModalCliente(null, 'filho-santo')" class="px-3.5 py-2.5 bg-executive-primary hover:bg-executive-secondary text-white rounded-xl font-semibold text-xs shadow-sm transition-colors flex items-center justify-center gap-1.5 flex-1 sm:flex-none">
+                  <i class="fa-solid fa-user-plus"></i> Novo Cliente
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div id="grid-clientes" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+          
+          <div id="empty-clientes" class="hidden text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
+            <i class="fa-solid fa-users-slash text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
+            <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">Nenhum cliente cadastrado</h3>
+            <p class="text-xs text-slate-400 mt-1">Cadastre o primeiro cliente para começar o controle.</p>
+            <button onclick="openModalCliente()" class="mt-4 px-4 py-2 bg-executive-primary text-white text-xs font-semibold rounded-xl">Novo Cadastro</button>
+          </div>
+        </div>
+
+        <!-- DETALHES CLIENTE -->
+        <div id="view-cliente-detalhes" class="hidden space-y-6">
+          <div class="flex flex-wrap items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+            <div class="flex items-center space-x-4">
+              <button onclick="fecharDetalhesCliente()" class="p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <i class="fa-solid fa-arrow-left"></i>
+              </button>
+              <div>
+                <h2 id="detalhe-cliente-nome" class="text-xl font-bold text-slate-900 dark:text-white">--</h2>
+                <p id="detalhe-cliente-tel" class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-1.5 mt-0.5">
+                  <i class="fa-solid fa-phone text-slate-400"></i> <span>--</span>
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-center space-x-2">
+              <button onclick="exportarContaPDF()" class="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-file-pdf text-rose-500"></i> Baixar PDF
+              </button>
+              <button onclick="editarClienteAtual()" class="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                <i class="fa-solid fa-pen-to-square"></i> Editar
+              </button>
+              <button onclick="excluirClienteAtual()" class="px-3.5 py-2 rounded-xl bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 text-xs font-semibold hover:bg-rose-100 transition-colors">
+                <i class="fa-solid fa-trash"></i> Excluir
+              </button>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Pegou / Comprado</span>
+              <p id="detalhe-total-comprado" class="text-xl font-black text-slate-800 dark:text-slate-100 mt-1">R$ 0,00</p>
+            </div>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Total Pago / Abatido</span>
+              <p id="detalhe-total-pago" class="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-1">R$ 0,00</p>
+            </div>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden">
+              <div id="detalhe-status-bar" class="absolute top-0 right-0 w-2 h-full bg-emerald-500"></div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Saldo Devedor Atual</span>
+              <p id="detalhe-saldo-devedor" class="text-2xl font-black text-amber-600 dark:text-amber-400 mt-1">R$ 0,00</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Form Débito -->
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                <i class="fa-solid fa-cart-plus text-executive-primary"></i> Lançar Nova Compra (Débito)
+              </h3>
+              
+              <form id="form-nova-compra" onsubmit="salvarLancamentoCompra(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Catálogo de Fios</label>
+                    <select id="compra-select-produto" onchange="selecionarProdutoCompra()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                      <option value="">-- Item Avulso --</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Firma</label>
+                    <select id="compra-select-firma" onchange="calcularTotalCompra()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                      <option value="sem-firma">Sem Firma</option>
+                      <option value="com-firma">Com Firma (+R$ 5,00)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Pingente</label>
+                    <select id="compra-select-pingente" onchange="calcularTotalCompra()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                      <option value="sem-pingente">Sem Pingente</option>
+                      <option value="com-pingente">Com Pingente (+R$ 5,00)</option>
+                    </select>
+                  </div>
+
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Descrição / Produto</label>
+                    <input type="text" id="compra-descricao" placeholder="Ex: Guia de Miçanga" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Quantidade</label>
+                    <input type="number" id="compra-qtd" value="1" min="1" oninput="calcularTotalCompra()" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Valor Base (R$)</label>
+                    <input type="number" step="0.01" id="compra-valor-unit" oninput="alterarValorBaseCompra()" placeholder="0,00" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Total (R$)</label>
+                    <input type="text" id="compra-valor-total" readonly value="R$ 0,00" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-200 dark:bg-slate-800 font-bold text-xs">
+                  </div>
+                </div>
+
+                <button type="button" onclick="adicionarItemSacola()" class="w-full py-2.5 bg-slate-700 hover:bg-slate-800 text-white rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-cart-plus"></i> Adicionar item à sacola
+                </button>
+                <div id="sacola-compra" class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+                  <div class="flex items-center justify-between gap-2 px-3 py-2 bg-slate-50 dark:bg-slate-950">
+                    <span class="text-xs font-bold"><i class="fa-solid fa-bag-shopping mr-1"></i> Sacola desta compra</span>
+                    <span id="sacola-contagem" class="text-[11px] text-slate-500">0 itens</span>
+                  </div>
+                  <div id="sacola-itens" class="p-3 text-xs text-slate-400">Adicione produtos para montar uma compra.</div>
+                  <div class="flex items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-700 px-3 py-3">
+                    <span class="text-xs font-semibold">Total da compra</span>
+                    <strong id="sacola-total" class="text-base text-rose-600 dark:text-rose-400">R$ 0,00</strong>
+                  </div>
+                </div>
+                <button type="submit" class="w-full py-2.5 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-check"></i> Confirmar compra e lançar débito
+                </button>
+              </form>
+            </div>
+
+            <!-- Form Pagamento -->
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm space-y-4">
+              <div class="flex items-center justify-between">
+                <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider flex items-center gap-2">
+                  <i class="fa-solid fa-hand-holding-dollar text-emerald-500"></i> Registrar Abatimento
+                </h3>
+                <button type="button" onclick="preencherQuitarTudo()" class="text-xs text-emerald-600 dark:text-emerald-400 font-semibold hover:underline">
+                  Quitar Saldo Total
+                </button>
+              </div>
+
+              <form id="form-novo-pagamento" onsubmit="salvarLancamentoPagamento(event)" class="space-y-3">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Valor do Pagamento (R$) *</label>
+                    <input type="number" step="0.01" id="pagamento-valor" required placeholder="0,00" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+                  <div>
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Forma de Pagamento</label>
+                    <select id="pagamento-forma" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                      <option value="Pix">Pix</option>
+                      <option value="Dinheiro">Dinheiro</option>
+                      <option value="Cartão de Débito">Cartão de Débito</option>
+                      <option value="Cartão de Crédito">Cartão de Crédito</option>
+                      <option value="Outro">Outro</option>
+                    </select>
+                  </div>
+                  <div class="sm:col-span-2">
+                    <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Observações / Comprovante</label>
+                    <input type="text" id="pagamento-obs" placeholder="Ex: Pago via Pix" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  </div>
+                </div>
+
+                <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold text-xs transition-colors flex items-center justify-center gap-2">
+                  <i class="fa-solid fa-check"></i> Registrar Abatimento
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Extrato do Cliente -->
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+              <h3 class="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                Extrato Detalhado da Conta
+              </h3>
+              <span class="text-[11px] text-slate-400">Ordenado das mais recentes para as mais antigas</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse min-w-[500px]">
+                <thead>
+                  <tr class="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+                    <th class="p-3">Data/Hora</th>
+                    <th class="p-3">Tipo</th>
+                    <th class="p-3">Descrição / Detalhes</th>
+                    <th class="p-3 text-right">Valor</th>
+                    <th class="p-3 text-center w-16 no-print">Ação</th>
+                  </tr>
+                </thead>
+                <tbody id="tbody-extrato-cliente" class="divide-y divide-slate-200 dark:divide-slate-800 text-xs"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 2: CATÁLOGO -->
+      <section id="sec-catalogo" class="tab-content hidden space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
+          <div class="relative flex-1">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+            <input type="text" id="input-busca-produto" oninput="renderProdutos()" placeholder="Buscar por produto ou SKU..." class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-sm focus:outline-none focus:ring-2 focus:ring-executive-primary">
+          </div>
+
+          <div class="flex items-center space-x-2">
+            <select id="select-filtro-categoria-produto" onchange="renderProdutos()" class="py-2.5 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 text-xs sm:text-sm font-medium focus:outline-none focus:ring-2 focus:ring-executive-primary">
+              <option value="todas">Todas as Categorias</option>
+            </select>
+
+            <button onclick="openModalProduto()" class="px-4 py-2.5 bg-executive-primary hover:bg-executive-secondary text-white rounded-xl font-semibold text-xs sm:text-sm shadow-sm transition-colors flex items-center justify-center gap-2 whitespace-nowrap">
+              <i class="fa-solid fa-plus"></i> Novo Fio/Produto
+            </button>
+          </div>
+        </div>
+
+        <div id="grid-produtos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4"></div>
+
+        <div id="empty-produtos" class="hidden text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
+          <i class="fa-solid fa-box-open text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
+          <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">Nenhum produto no catálogo</h3>
+          <p class="text-xs text-slate-400 mt-1">Cadastre seus fios de contas para fácil seleção.</p>
+          <button onclick="openModalProduto()" class="mt-4 px-4 py-2 bg-executive-primary text-white text-xs font-semibold rounded-xl">Cadastrar Fio de Conta</button>
+        </div>
+      </section>
+
+      <!-- ABA 3: LANÇAR FIOS DIRETOS -->
+      <section id="sec-lancar-fios" class="tab-content hidden space-y-6">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-5">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-link text-executive-primary"></i> Lançar Fios Diretamente para uma Pessoa</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Selecione a pessoa e adicione itens ao carrinho para lançar débitos de forma rápida.</p>
+          </div>
+          <form id="form-lancar-fio-direto" onsubmit="salvarFioDireto(event)" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="direto-cliente" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pessoa *</label>
+                <select id="direto-cliente" required onchange="protegerPessoaSacolaFioDireto()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+                  <option value="">Carregando pessoas...</option>
+                </select>
+              </div>
+              <div>
+                <label for="direto-produto" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Fio de conta *</label>
+                <select id="direto-produto" onchange="atualizarFioDireto()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+                  <option value="">Selecione um fio...</option>
+                </select>
+              </div>
+              <div>
+                <label for="direto-firma" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Firma</label>
+                <select id="direto-firma" onchange="calcularFioDireto()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+                  <option value="sem-firma">Sem firma</option><option value="com-firma">Com firma (+ R$ 5,00)</option>
+                </select>
+              </div>
+              <div>
+                <label for="direto-pingente" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Pingente</label>
+                <select id="direto-pingente" onchange="calcularFioDireto()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+                  <option value="sem-pingente">Sem pingente</option><option value="com-pingente">Com pingente (+ R$ 5,00)</option>
+                </select>
+              </div>
+              <div>
+                <label for="direto-qtd" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Quantidade *</label>
+                <input id="direto-qtd" type="number" min="1" step="1" value="1" oninput="calcularFioDireto()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+              </div>
+              <div>
+                <label for="direto-valor-unit" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Valor Unitário Base (R$)</label>
+                <input id="direto-valor-unit" type="number" min="0" step="0.01" oninput="calcularFioDireto(true)" placeholder="Selecione um fio" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+              </div>
+              <div class="md:col-span-2">
+                <label for="direto-obs" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Observações do Item</label>
+                <input id="direto-obs" type="text" placeholder="Ex: Detalhes das miçangas" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+              </div>
+            </div>
+
+            <div class="rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-between gap-4">
+              <div><p class="text-xs text-slate-500 dark:text-slate-400">Subtotal do item</p><p id="direto-total" class="text-xl sm:text-2xl font-black text-rose-600 dark:text-rose-400">R$ 0,00</p></div>
+              <p id="direto-sku" class="hidden"></p>
+            </div>
+            
+            <button type="button" onclick="adicionarFioDiretoSacola()" class="w-full py-3 rounded-xl bg-slate-700 hover:bg-slate-800 text-white font-semibold text-xs sm:text-sm"><i class="fa-solid fa-cart-plus mr-2"></i>Adicionar item à sacola</button>
+            
+            <div id="direto-sacola" class="rounded-xl border border-slate-200 dark:border-slate-700 overflow-hidden">
+              <div class="flex items-center justify-between gap-2 px-4 py-3 bg-slate-50 dark:bg-slate-950"><span class="text-xs font-bold"><i class="fa-solid fa-bag-shopping mr-1"></i>Sacola desta compra</span><span id="direto-sacola-contagem" class="text-xs text-slate-500">0 itens</span></div>
+              <div id="direto-sacola-itens" class="p-4 text-xs text-slate-400">Adicione fios para montar uma compra.</div>
+              <div class="flex items-center justify-between gap-3 border-t border-slate-200 dark:border-slate-700 px-4 py-3"><span class="text-xs font-semibold">Total Geral</span><strong id="direto-sacola-total" class="text-base sm:text-lg text-rose-600 dark:text-rose-400">R$ 0,00</strong></div>
+            </div>
+
+            <button type="submit" class="w-full px-5 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs sm:text-sm"><i class="fa-solid fa-check mr-2"></i>Confirmar Compra e Lançar Débito</button>
+            <p id="direto-status" class="hidden rounded-xl p-3 text-xs sm:text-sm" role="status" aria-live="polite"></p>
+          </form>
+        </div>
+      </section>
+
+      <!-- ABA 4: QUITAR DÍVIDAS -->
+      <section id="sec-quitar" class="tab-content hidden space-y-6">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-4">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-hand-holding-dollar text-emerald-600"></i> Quitar Dívidas Pendentes</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Painel rápido para dar baixa parcial ou total nos clientes com saldo em aberto.</p>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div class="rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 p-4"><p class="text-xs font-bold text-amber-800 dark:text-amber-300">Total Pendente Geral</p><p id="quitar-total-pendente" class="text-xl font-black text-amber-900 dark:text-amber-200 mt-1">R$ 0,00</p></div>
+            <div class="rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4"><p class="text-xs font-bold text-slate-500 dark:text-slate-400">Pessoas em Débito</p><p id="quitar-qtd-pendentes" class="text-xl font-black text-slate-900 dark:text-white mt-1">0</p></div>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <input id="quitar-busca" type="search" oninput="renderListaQuitar()" placeholder="Buscar pessoa pelo nome..." class="flex-1 px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+            <button type="button" onclick="renderListaQuitar()" class="px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs sm:text-sm font-semibold"><i class="fa-solid fa-rotate mr-2"></i>Atualizar Lista</button>
+          </div>
+          <div id="quitar-lista" class="space-y-3"><p class="text-xs text-slate-400 text-center py-8">Carregando débitos...</p></div>
+        </div>
+
+        <!-- Modal Pagamento Parcial -->
+        <div id="modal-pagamento-parcial" class="hidden fixed inset-0 z-[80] bg-slate-950/70 p-4 flex items-center justify-center" role="dialog" aria-modal="true">
+          <div class="w-full max-w-md rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 shadow-2xl p-5 space-y-4">
+            <div class="flex items-start justify-between gap-3">
+              <div><h3 class="text-base font-bold text-slate-900 dark:text-white">Pagamento Parcial</h3><p id="parcial-cliente-nome" class="text-xs text-slate-500 dark:text-slate-400 mt-0.5"></p></div>
+              <button type="button" onclick="fecharPagamentoParcial()" class="p-2 rounded-lg text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="rounded-xl bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 p-3"><p class="text-xs text-amber-800 dark:text-amber-300 font-semibold">Saldo Devedor Atual</p><p id="parcial-saldo-atual" class="text-lg font-black text-amber-900 dark:text-amber-200"></p></div>
+            <form id="form-pagamento-parcial" onsubmit="confirmarPagamentoParcial(event)" class="space-y-4">
+              <label for="parcial-valor" class="block text-xs font-semibold text-slate-700 dark:text-slate-200">Valor Pago (R$)</label>
+              <input id="parcial-valor" type="number" inputmode="decimal" min="0.01" step="0.01" required placeholder="0,00" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-base font-bold">
+              <p id="parcial-erro" class="hidden text-xs text-rose-600" role="alert"></p>
+              <div class="flex gap-3"><button type="button" onclick="fecharPagamentoParcial()" class="flex-1 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-xs font-semibold">Cancelar</button><button type="submit" class="flex-1 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold">Confirmar Baixa</button></div>
+            </form>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 5: CATEGORIAS -->
+      <section id="sec-categorias" class="tab-content hidden space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4">
+          <div>
+            <h2 class="text-lg font-bold text-slate-900 dark:text-white">Gerenciamento de Categorias</h2>
+            <p class="text-xs text-slate-500">Organize seus produtos por categorias (Ex: Miçangas, Brajás, Orixás)</p>
+          </div>
+
+          <button onclick="openModalCategoria()" class="px-4 py-2.5 bg-executive-primary hover:bg-executive-secondary text-white rounded-xl font-semibold text-xs sm:text-sm shadow-sm transition-colors flex items-center justify-center gap-2">
+            <i class="fa-solid fa-folder-plus"></i> Nova Categoria
+          </button>
+        </div>
+
+        <div id="grid-categorias" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"></div>
+
+        <div id="empty-categorias" class="hidden text-center py-16 bg-white dark:bg-slate-900 rounded-2xl border border-dashed border-slate-300 dark:border-slate-800">
+          <i class="fa-solid fa-folder-open text-4xl text-slate-300 dark:text-slate-700 mb-3"></i>
+          <h3 class="text-base font-semibold text-slate-700 dark:text-slate-300">Nenhuma categoria cadastrada</h3>
+          <p class="text-xs text-slate-400 mt-1">Crie categorias para organizar o seu catálogo.</p>
+        </div>
+      </section>
+
+      <!-- ABA 6: EXTRATO GERAL -->
+      <section id="sec-extrato-geral" class="tab-content hidden space-y-6">
+        <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm">
+          <div>
+            <h2 class="text-base font-bold text-slate-900 dark:text-white">Extrato Consolidado de Transações</h2>
+            <p class="text-xs text-slate-500">Histórico completo de débitos e lançamentos no sistema</p>
+          </div>
+
+          <div class="flex items-center gap-2">
+            <select id="filtro-extrato-tipo" onchange="renderExtratoGeral()" class="py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-medium">
+              <option value="todos">Todos os Tipos</option>
+              <option value="compra">Apenas Débitos (Compras)</option>
+              <option value="pagamento">Apenas Créditos (Pagamentos)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse min-w-[600px]">
+              <thead>
+                <tr class="bg-slate-50 dark:bg-slate-950 text-slate-500 dark:text-slate-400 text-[10px] uppercase tracking-wider border-b border-slate-200 dark:border-slate-800">
+                  <th class="p-3">Data/Hora</th>
+                  <th class="p-3">Cliente</th>
+                  <th class="p-3">Tipo</th>
+                  <th class="p-3">Descrição / Forma</th>
+                  <th class="p-3 text-right">Valor</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-extrato-geral" class="divide-y divide-slate-200 dark:divide-slate-800 text-xs"></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 7: ADIÇÃO EM MASSA -->
+      <section id="sec-massa" class="tab-content hidden space-y-6">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-5">
+          <div>
+            <h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-file-import text-executive-primary"></i> Importação em Massa</h2>
+            <p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Carregue dados via planilha (.xlsx / .csv) para inserção em lote.</p>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label for="massa-tipo" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Tipo de Dado</label>
+              <select id="massa-tipo" onchange="atualizarAjudaMassa(); limparPreviewMassa()" class="w-full px-3 py-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs sm:text-sm">
+                <option value="clientes">Clientes</option>
+                <option value="produtos">Produtos / Fios</option>
+                <option value="transacoes">Lançamentos (Compras/Pagamentos)</option>
+              </select>
+            </div>
+            <div class="md:col-span-2">
+              <label for="massa-arquivo" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Selecionar Planilha (.xlsx, .csv)</label>
+              <input id="massa-arquivo" type="file" accept=".csv,.txt,.xlsx,.xls" onchange="lerArquivoMassa(event)" class="block w-full text-xs text-slate-500 file:mr-3 file:rounded-lg file:border-0 file:bg-slate-100 dark:file:bg-slate-800 file:px-4 file:py-2 file:font-semibold file:text-slate-700 dark:file:text-slate-200" />
+            </div>
+          </div>
+          
+          <div class="rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 p-4 space-y-2">
+            <h3 class="text-xs font-bold text-slate-800 dark:text-slate-100">Formato exigido</h3>
+            <p id="massa-ajuda" class="text-xs text-slate-600 dark:text-slate-300"></p>
+            <div class="flex flex-wrap gap-2 pt-1">
+              <button type="button" onclick="baixarModeloMassa()" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-white dark:hover:bg-slate-900"><i class="fa-solid fa-download mr-1"></i> Baixar Modelo CSV</button>
+              <button type="button" onclick="carregarExemploMassa()" class="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-xs font-semibold hover:bg-white dark:hover:bg-slate-900">Inserir Exemplo</button>
+            </div>
+          </div>
+
+          <div>
+            <label for="massa-dados" class="block text-xs font-semibold text-slate-600 dark:text-slate-300 mb-1">Ou cole os dados estruturados abaixo:</label>
+            <textarea id="massa-dados" rows="6" placeholder="Nome;Telefone;Tipo..." oninput="limparPreviewMassa()" class="w-full px-3 py-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-950 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-executive-primary"></textarea>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button type="button" onclick="previsualizarMassa()" class="px-4 py-2.5 rounded-xl bg-slate-700 hover:bg-slate-800 text-white text-xs font-semibold"><i class="fa-solid fa-eye mr-2"></i>Validar e Pré-visualizar</button>
+            <button type="button" id="massa-importar-btn" onclick="importarMassa()" disabled class="px-4 py-2.5 rounded-xl bg-executive-primary hover:bg-executive-secondary disabled:opacity-40 disabled:cursor-not-allowed text-white text-xs font-semibold"><i class="fa-solid fa-cloud-arrow-up mr-2"></i>Importar para o Banco</button>
+            <button type="button" onclick="limparMassa()" class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-xs font-semibold">Limpar</button>
+          </div>
+
+          <div id="massa-status" class="hidden rounded-xl p-3 text-xs sm:text-sm" role="status"></div>
+          
+          <div id="massa-preview-wrap" class="hidden space-y-3">
+            <div class="flex items-center justify-between gap-2"><h3 class="font-bold text-xs text-slate-800 dark:text-slate-100">Prévia de Importação</h3><span id="massa-contagem" class="text-xs text-slate-500"></span></div>
+            <div class="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800"><table class="min-w-full text-left text-xs"><thead id="massa-preview-head" class="bg-slate-50 dark:bg-slate-950"></thead><tbody id="massa-preview-body" class="divide-y divide-slate-200 dark:divide-slate-800"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ABA 8: CONFIGURAÇÕES -->
+      <section id="sec-configuracoes" class="tab-content hidden space-y-6">
+        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm p-5 sm:p-6 space-y-4">
+          <div><h2 class="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2"><i class="fa-solid fa-gear text-executive-primary"></i> Manutenção do Sistema</h2><p class="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">Ferramentas de exportação e reset do banco de dados.</p></div>
+          
+          <div class="rounded-xl border border-emerald-200 dark:border-emerald-900 bg-emerald-50 dark:bg-emerald-950/30 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+            <div><h3 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">Exportar Cópia de Segurança (Backup)</h3><p class="text-xs text-slate-600 dark:text-slate-300 mt-0.5">Baixe um arquivo contendo todo o estado dos clientes, produtos e histórico.</p></div>
+            <button onclick="exportarBackupJSON()" class="shrink-0 px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-semibold"><i class="fa-solid fa-download mr-2"></i>Baixar JSON</button>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-2"><h3 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">Zerar Categorias</h3><p class="text-xs text-slate-500">Remove todas as categorias cadastradas.</p><button onclick="confirmarLimpeza('categorias')" class="w-full px-4 py-2 rounded-xl border border-amber-300 text-amber-700 dark:text-amber-300 text-xs font-semibold"><i class="fa-solid fa-tags mr-2"></i>Zerar Categorias</button></div>
+            <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-2"><h3 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">Zerar Catálogo de Fios</h3><p class="text-xs text-slate-500">Remove todos os produtos e guias cadastrados.</p><button onclick="confirmarLimpeza('produtos')" class="w-full px-4 py-2 rounded-xl border border-amber-300 text-amber-700 dark:text-amber-300 text-xs font-semibold"><i class="fa-solid fa-gem mr-2"></i>Zerar Fios de Contas</button></div>
+            <div class="rounded-xl border border-slate-200 dark:border-slate-700 p-4 space-y-2"><h3 class="font-semibold text-xs sm:text-sm text-slate-900 dark:text-white">Zerar Histórico de Registros</h3><p class="text-xs text-slate-500">Limpa todas as compras e abatimentos efetuados.</p><button onclick="confirmarLimpeza('transacoes')" class="w-full px-4 py-2 rounded-xl border border-rose-300 text-rose-700 dark:text-rose-300 text-xs font-semibold"><i class="fa-solid fa-receipt mr-2"></i>Zerar Lançamentos</button></div>
+            <div class="rounded-xl border border-rose-300 dark:border-rose-900 p-4 space-y-2"><h3 class="font-semibold text-xs sm:text-sm text-rose-700 dark:text-rose-300">Zerar Banco de Dados Completo</h3><p class="text-xs text-slate-500">Apaga Clientes, Produtos, Categorias e Históricos.</p><button onclick="confirmarLimpeza('tudo')" class="w-full px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Zerar Banco Total</button></div>
+          </div>
+          <div id="config-status" class="hidden rounded-xl p-3 text-xs sm:text-sm" role="status" aria-live="polite"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar Otimizada -->
+  <div class="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-t border-slate-200 dark:border-slate-800 z-40 px-2 py-2 no-print shadow-lg">
+    <div class="grid grid-cols-5 gap-1 text-center items-center">
+      <button onclick="switchTab('clientes')" id="mobile-tab-clientes" class="flex flex-col items-center justify-center py-1 rounded-xl text-executive-primary dark:text-emerald-400 font-bold transition-all">
+        <i class="fa-solid fa-user-group text-base mb-0.5"></i>
+        <span class="text-[10px] tracking-tight">Clientes</span>
+      </button>
+      
+      <button onclick="switchTab('catalogo')" id="mobile-tab-catalogo" class="flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+        <i class="fa-solid fa-gem text-base mb-0.5"></i>
+        <span class="text-[10px] tracking-tight">Fios</span>
+      </button>
+
+      <button onclick="switchTab('lancar-fios')" id="mobile-tab-lancar-fios" class="flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+        <i class="fa-solid fa-link text-base mb-0.5"></i>
+        <span class="text-[10px] tracking-tight">Lançar</span>
+      </button>
+
+      <button onclick="switchTab('quitar')" id="mobile-tab-quitar" class="flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+        <i class="fa-solid fa-hand-holding-dollar text-base mb-0.5"></i>
+        <span class="text-[10px] tracking-tight">Quitar</span>
+      </button>
+
+      <button onclick="toggleMenuMaisMobile()" id="mobile-btn-mais" class="flex flex-col items-center justify-center py-1 rounded-xl text-slate-400 hover:text-slate-600 transition-all">
+        <i class="fa-solid fa-bars-staggered text-base mb-0.5"></i>
+        <span class="text-[10px] tracking-tight">Mais</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Menu Gaveta "Mais" para Mobile (Categorias, Extrato, Massa, Configurações) -->
+  <div id="modal-mais-mobile" class="hidden fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-sm flex items-end justify-center md:hidden transition-opacity">
+    <div class="w-full bg-white dark:bg-slate-900 rounded-t-3xl border-t border-slate-200 dark:border-slate-800 p-6 space-y-4 shadow-2xl animate-in slide-in-from-bottom duration-200">
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
+        <h3 class="font-bold text-sm text-slate-900 dark:text-white flex items-center gap-2">
+          <i class="fa-solid fa-ellipsis-vertical text-executive-primary"></i> Mais Opções do Sistema
+        </h3>
+        <button onclick="toggleMenuMaisMobile()" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <button onclick="selecionarOpcaoMais('categorias')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-left flex items-center gap-3 transition-all hover:border-executive-primary">
+          <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-tags"></i></div>
+          <div><p class="font-bold text-xs text-slate-800 dark:text-slate-200">Categorias</p><p class="text-[10px] text-slate-400">Organizar fios</p></div>
+        </button>
+
+        <button onclick="selecionarOpcaoMais('extrato-geral')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-left flex items-center gap-3 transition-all hover:border-executive-primary">
+          <div class="w-9 h-9 rounded-xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center"><i class="fa-solid fa-receipt"></i></div>
+          <div><p class="font-bold text-xs text-slate-800 dark:text-slate-200">Extrato Geral</p><p class="text-[10px] text-slate-400">Histórico total</p></div>
+        </button>
+
+        <button onclick="selecionarOpcaoMais('massa')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-left flex items-center gap-3 transition-all hover:border-executive-primary">
+          <div class="w-9 h-9 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center"><i class="fa-solid fa-file-import"></i></div>
+          <div><p class="font-bold text-xs text-slate-800 dark:text-slate-200">Adição em Massa</p><p class="text-[10px] text-slate-400">Importar dados</p></div>
+        </button>
+
+        <button onclick="selecionarOpcaoMais('configuracoes')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-left flex items-center gap-3 transition-all hover:border-executive-primary">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 dark:bg-amber-950 text-amber-600 dark:text-amber-400 flex items-center justify-center"><i class="fa-solid fa-gear"></i></div>
+          <div><p class="font-bold text-xs text-slate-800 dark:text-slate-200">Configurações</p><p class="text-[10px] text-slate-400">Backup e reset</p></div>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAIS MODAIS -->
+
+  <!-- Modal Cliente -->
+  <div id="modal-cliente" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 id="modal-cliente-titulo" class="text-base font-bold text-slate-900 dark:text-white">Novo Cadastro</h3>
+        <button onclick="closeModalCliente()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="form-cliente" onsubmit="salvarCliente(event)" class="space-y-4">
+        <input type="hidden" id="modal-cliente-id">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Tipo de Cadastro *</label>
+          <select id="modal-cliente-tipo" required class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+            <option value="filho-santo">Filho de Santo</option>
+            <option value="assistencia">Assistência</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Nome Completo *</label>
+          <input type="text" id="modal-cliente-nome" required placeholder="Ex: Maria das Graças" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Telefone / WhatsApp</label>
+          <input type="text" id="modal-cliente-tel" placeholder="(11) 99999-8888" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Observações</label>
+          <textarea id="modal-cliente-obs" rows="2" placeholder="Observações adicionais..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary"></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-2">
+          <button type="button" onclick="closeModalCliente()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-executive-primary hover:bg-executive-secondary text-white rounded-xl text-xs font-semibold">Salvar Cadastro</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Produto / Fio -->
+  <div id="modal-produto" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-md w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 id="modal-produto-titulo" class="text-base font-bold text-slate-900 dark:text-white">Cadastrar Fio de Conta</h3>
+        <button onclick="closeModalProduto()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="form-produto" onsubmit="salvarProduto(event)" class="space-y-3">
+        <input type="hidden" id="modal-produto-id">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">SKU (Código Exclusivo) *</label>
+          <input type="text" id="modal-produto-sku" required maxlength="80" placeholder="Ex: GUIA-OX-001" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Nome do Fio / Produto *</label>
+          <input type="text" id="modal-produto-nome" required placeholder="Ex: Guia 7 Linhas Miçanga" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Categoria *</label>
+            <select id="modal-produto-categoria" required class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Preço Base (R$) *</label>
+            <input type="number" step="0.01" id="modal-produto-preco" required placeholder="45.00" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Estoque Disponível</label>
+          <input type="number" id="modal-produto-estoque" value="10" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Descrição</label>
+          <textarea id="modal-produto-descricao" rows="2" placeholder="Ex: Miçangas Jablonex..." class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary"></textarea>
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-2">
+          <button type="button" onclick="closeModalProduto()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-executive-primary hover:bg-executive-secondary text-white rounded-xl text-xs font-semibold">Salvar Produto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal Categoria -->
+  <div id="modal-categoria" class="fixed inset-0 bg-slate-950/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl max-w-sm w-full border border-slate-200 dark:border-slate-800 shadow-2xl p-6 space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="text-base font-bold text-slate-900 dark:text-white">Nova Categoria</h3>
+        <button onclick="closeModalCategoria()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="form-categoria" onsubmit="salvarCategoria(event)" class="space-y-4">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 dark:text-slate-400 mb-1">Nome da Categoria *</label>
+          <input type="text" id="modal-categoria-nome" required placeholder="Ex: Brajás" class="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs focus:outline-none focus:ring-2 focus:ring-executive-primary">
+        </div>
+
+        <div class="flex justify-end space-x-2 pt-2">
+          <button type="button" onclick="closeModalCategoria()" class="px-4 py-2 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-600 dark:text-slate-300 text-xs font-semibold">Cancelar</button>
+          <button type="submit" class="px-4 py-2 bg-executive-primary hover:bg-executive-secondary text-white rounded-xl text-xs font-semibold">Salvar Categoria</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT FIREBASE COMPLETO -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getDatabase, ref, onValue, set, push, update, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAQCyebKjH-m1ToY5DTBzMq_qG8XLeAe2M",
+      authDomain: "controle-de-fios-de-conta.firebaseapp.com",
+      databaseURL: "https://controle-de-fios-de-conta-default-rtdb.firebaseio.com",
+      projectId: "controle-de-fios-de-conta",
+      storageBucket: "controle-de-fios-de-conta.firebasestorage.app",
+      messagingSenderId: "478052515254",
+      appId: "1:478052515254:web:def3fbb76af0df511c5517"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    window.appState = {
+      clientes: {},
+      produtos: {},
+      categorias: {},
+      transacoes: {},
+      clienteSelecionadoId: null
+    };
+
+    const connectedRef = ref(db, ".info/connected");
+    onValue(connectedRef, (snap) => {
+      const isConnected = snap.val() === true;
+      const statusDot = document.getElementById('firebase-dot');
+      const statusPing = document.getElementById('firebase-ping');
+      const statusText = document.getElementById('firebase-status-text');
+
+      if (statusDot && statusPing && statusText) {
+        if (isConnected) {
+          statusDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500";
+          statusPing.className = "animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75";
+          statusText.innerText = "Firebase Conectado";
+        } else {
+          statusDot.className = "relative inline-flex rounded-full h-2.5 w-2.5 bg-rose-500";
+          statusPing.className = "hidden";
+          statusText.innerText = "Desconectado";
+        }
+      }
+    });
+
+    onValue(ref(db, 'clientes'), (snapshot) => {
+      window.appState.clientes = snapshot.val() || {};
+      window.renderClientes();
+      window.popularSelectsFioDireto?.();
+      window.atualizarEstatisticas();
+      if (window.appState.clienteSelecionadoId) window.renderDetalhesCliente();
+    });
+
+    onValue(ref(db, 'produtos'), (snapshot) => {
+      window.appState.produtos = snapshot.val() || {};
+      window.renderProdutos();
+      window.popularSelectProdutosCompra();
+      window.popularSelectsFioDireto?.();
+      window.atualizarEstatisticas();
+    });
+
+    onValue(ref(db, 'categorias'), (snapshot) => {
+      window.appState.categorias = snapshot.val() || {};
+      window.renderCategorias();
+      window.atualizarFiltroCategorias();
+      window.popularSelectProdutosCompra();
+      window.atualizarEstatisticas();
+    });
+
+    onValue(ref(db, 'transacoes'), (snapshot) => {
+      window.appState.transacoes = snapshot.val() || {};
+      window.renderClientes();
+      window.atualizarEstatisticas();
+      if (window.appState.clienteSelecionadoId) window.renderDetalhesCliente();
+      window.renderExtratoGeral();
+      if (document.getElementById('sec-quitar') && !document.getElementById('sec-quitar').classList.contains('hidden')) window.renderListaQuitar?.();
+    });
+
+    window.db = db;
+    window.dbRef = ref;
+    window.dbSet = set;
+    window.dbPush = push;
+    window.dbUpdate = update;
+    window.dbRemove = remove;
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+  <script>
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('active-tab', 'border-executive-primary', 'text-executive-primary', 'dark:text-emerald-400');
+        el.classList.add('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+      });
+
+      const targetSec = document.getElementById(`sec-${tabName}`);
+      const targetBtn = document.getElementById(`tab-btn-${tabName}`);
+      
+      if (targetSec) targetSec.classList.remove('hidden');
+      if (targetBtn) {
+        targetBtn.classList.add('active-tab', 'border-executive-primary', 'text-executive-primary', 'dark:text-emerald-400');
+        targetBtn.classList.remove('border-transparent', 'text-slate-500', 'dark:text-slate-400');
+      }
+
+      // Atualiza aba ativa na barra inferior padrão (se for uma das 4 principais)
+      document.querySelectorAll('[id^="mobile-tab-"]').forEach(btn => {
+        btn.classList.remove('text-executive-primary', 'dark:text-emerald-400', 'font-bold');
+        btn.classList.add('text-slate-400');
+      });
+      const mobBtn = document.getElementById(`mobile-tab-${tabName}`);
+      if (mobBtn) {
+        mobBtn.classList.add('text-executive-primary', 'dark:text-emerald-400', 'font-bold');
+        mobBtn.classList.remove('text-slate-400');
+      } else {
+        // Se for aba secundária, destaca o botão "Mais"
+        const maisBtn = document.getElementById('mobile-btn-mais');
+        if (maisBtn) {
+          maisBtn.classList.add('text-executive-primary', 'dark:text-emerald-400', 'font-bold');
+          maisBtn.classList.remove('text-slate-400');
+        }
+      }
+
+      if (tabName === 'quitar') renderListaQuitar();
+    }
+
+    function toggleMenuMaisMobile() {
+      const modal = document.getElementById('modal-mais-mobile');
+      if (modal) modal.classList.toggle('hidden');
+    }
+
+    function selecionarOpcaoMais(tabName) {
+      toggleMenuMaisMobile();
+      switchTab(tabName);
+    }
+
+    const themeToggleBtn = document.getElementById('theme-toggle');
+    const darkIcon = document.getElementById('theme-toggle-dark-icon');
+    const lightIcon = document.getElementById('theme-toggle-light-icon');
+
+    if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+      document.documentElement.classList.add('dark');
+      if (lightIcon) lightIcon.classList.remove('hidden');
+    } else {
+      document.documentElement.classList.remove('dark');
+      if (darkIcon) darkIcon.classList.remove('hidden');
+    }
+
+    if (themeToggleBtn) themeToggleBtn.addEventListener('click', function() {
+      if (lightIcon && darkIcon) {
+        lightIcon.classList.toggle('hidden');
+        darkIcon.classList.toggle('hidden');
+      }
+      if (document.documentElement.classList.contains('dark')) {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('color-theme', 'light');
+      } else {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('color-theme', 'dark');
+      }
+    });
+
+    function formatarMoeda(val) {
+      return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(val || 0);
+    }
+
+    function atualizarEstatisticas() {
+      const clientes = window.appState.clientes || {};
+      const produtos = window.appState.produtos || {};
+      const categorias = window.appState.categorias || {};
+
+      let totalAcomprar = 0;
+      let totalPago = 0;
+
+      listarTransacoesNormalizadas().forEach(t => {
+        if (t.tipoNormalizado === 'compra') totalAcomprar += t.valorNumerico;
+        if (t.tipoNormalizado === 'pagamento') totalPago += t.valorNumerico;
+      });
+
+      const saldoPendente = Math.max(0, totalAcomprar - totalPago);
+
+      document.getElementById('stat-a-receber').innerText = formatarMoeda(saldoPendente);
+      document.getElementById('stat-recebido').innerText = formatarMoeda(totalPago);
+      document.getElementById('stat-total-compras').innerText = formatarMoeda(totalAcomprar);
+      
+      document.getElementById('stat-total-clientes').innerText = Object.keys(clientes).length;
+
+      let clientesEmDebito = 0;
+      Object.keys(clientes).forEach(cid => {
+        if (calcularSaldoCliente(cid) > 0) clientesEmDebito++;
+      });
+      document.getElementById('stat-clientes-em-debito').innerText = `${clientesEmDebito} em débito`;
+
+      document.getElementById('stat-total-produtos').innerText = Object.keys(produtos).length;
+      document.getElementById('stat-categorias-count').innerText = `${Object.keys(categorias).length} categorias`;
+    }
+
+    function normalizarTipoTransacao(transacao) {
+      const tipo = String(transacao?.tipo || transacao?.tipoTransacao || transacao?.operacao || '')
+        .trim().toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      if (['compra', 'debito', 'venda', 'saida', 'fiado'].includes(tipo)) return 'compra';
+      if (['pagamento', 'credito', 'recebimento', 'entrada'].includes(tipo)) return 'pagamento';
+      return tipo;
+    }
+
+    function valorNumericoTransacao(transacao) {
+      let valor = transacao?.valor ?? transacao?.valorTotal ?? transacao?.total ?? 0;
+      if (typeof valor === 'string') {
+        valor = valor.trim().replace(/R\$/gi, '').replace(/\s/g, '');
+        if (valor.includes(',')) valor = valor.replace(/\./g, '').replace(',', '.');
+      }
+      const numero = Number(valor);
+      return Number.isFinite(numero) ? numero : 0;
+    }
+
+    function listarTransacoesNormalizadas() {
+      const raiz = window.appState.transacoes || {};
+      const idsClientes = new Set(Object.keys(window.appState.clientes || {}).map(String));
+      const lista = [];
+      const visitados = new Set();
+
+      function percorrer(no, chave, clienteHerdado = null) {
+        if (!no || typeof no !== 'object' || Array.isArray(no)) return;
+        if (visitados.has(no)) return;
+        visitados.add(no);
+
+        const tipo = normalizarTipoTransacao(no);
+        const temValor = no.valor !== undefined || no.valorTotal !== undefined || no.total !== undefined;
+        if (tipo && temValor) {
+          const clienteId = no.clienteId ?? no.idCliente ?? clienteHerdado ?? null;
+          lista.push({
+            ...no,
+            id: no.id || chave || '',
+            clienteId: clienteId == null ? null : String(clienteId),
+            tipoNormalizado: tipo,
+            valorNumerico: valorNumericoTransacao(no)
+          });
+          return;
+        }
+
+        Object.entries(no).forEach(([subChave, valor]) => {
+          const clienteIdHerdado = idsClientes.has(String(subChave)) ? String(subChave) : clienteHerdado;
+          percorrer(valor, subChave, clienteIdHerdado);
+        });
+      }
+
+      Object.entries(raiz).forEach(([chave, valor]) => percorrer(valor, chave, idsClientes.has(String(chave)) ? String(chave) : null));
+      return lista;
+    }
+
+    function calcularSaldoCliente(clienteId) {
+      const idAlvo = String(clienteId ?? '');
+      let totalC = 0, totalP = 0;
+
+      listarTransacoesNormalizadas().forEach(t => {
+        if (String(t.clienteId ?? '') !== idAlvo) return;
+        if (t.tipoNormalizado === 'compra') totalC += t.valorNumerico;
+        else if (t.tipoNormalizado === 'pagamento') totalP += t.valorNumerico;
+      });
+      return Math.round((totalC - totalP + Number.EPSILON) * 100) / 100;
+    }
+
+    function contarGuiasCliente(clienteId) {
+      return listarTransacoesNormalizadas()
+        .filter(t => String(t.clienteId ?? '') === String(clienteId) && t.tipoNormalizado === 'compra')
+        .reduce((total, t) => {
+          const qtd = Number(t.quantidade ?? t.qtd ?? 1);
+          return total + (Number.isFinite(qtd) && qtd > 0 ? qtd : 1);
+        }, 0);
+    }
+
+    function totalGastoCliente(clienteId) {
+      return listarTransacoesNormalizadas()
+        .filter(t => String(t.clienteId ?? '') === String(clienteId) && t.tipoNormalizado === 'compra')
+        .reduce((total, t) => total + (Number(t.valorNumerico) || 0), 0);
+    }
+
+    function getTipoCliente(cliente) {
+      return cliente?.tipo === 'assistencia' ? 'assistencia' : 'filho-santo';
+    }
+
+    function getTipoClienteLabel(tipo) {
+      return tipo === 'assistencia' ? 'ASSISTÊNCIA' : 'FILHO DE SANTO';
+    }
+
+    function renderClientes() {
+      const grid = document.getElementById('grid-clientes');
+      const emptyState = document.getElementById('empty-clientes');
+      const busca = (document.getElementById('input-busca-cliente')?.value || '').toLowerCase().trim();
+      const tipoFiltro = document.getElementById('select-filtro-tipo-cliente')?.value || 'todos';
+      const statusFiltro = document.getElementById('select-filtro-status-cliente')?.value || 'todos';
+      const ordem = document.getElementById('select-ordem-cliente')?.value || 'az';
+
+      const clientes = window.appState.clientes || {};
+      const clienteIds = Object.keys(clientes);
+
+      if (clienteIds.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+      emptyState.classList.add('hidden');
+
+      let listaClientes = clienteIds.map(id => {
+        const c = clientes[id] || {};
+        return {
+          id, c,
+          nome: c.nome || '',
+          tel: c.telefone || 'Sem telefone',
+          tipo: getTipoCliente(c),
+          saldoDevedor: calcularSaldoCliente(id),
+          totalPegou: totalGastoCliente(id),
+          totalGuias: contarGuiasCliente(id)
+        };
+      });
+
+      if (busca) listaClientes = listaClientes.filter(i => i.nome.toLowerCase().includes(busca) || i.tel.toLowerCase().includes(busca));
+      if (tipoFiltro !== 'todos') listaClientes = listaClientes.filter(i => i.tipo === tipoFiltro);
+      if (statusFiltro === 'debito') listaClientes = listaClientes.filter(i => i.saldoDevedor > 0);
+      else if (statusFiltro === 'quitado') listaClientes = listaClientes.filter(i => i.saldoDevedor <= 0);
+
+      listaClientes.sort((a, b) => {
+        if (ordem === 'maior-debito') return b.saldoDevedor - a.saldoDevedor;
+        if (ordem === 'menor-debito') return a.saldoDevedor - b.saldoDevedor;
+        return a.nome.localeCompare(b.nome, 'pt-BR');
+      });
+
+      if (listaClientes.length === 0) {
+        grid.innerHTML = `<div class="col-span-full text-center py-8 text-xs text-slate-400">Nenhum cliente encontrado.</div>`;
+        return;
+      }
+
+      grid.innerHTML = listaClientes.map(item => {
+        const { id, nome, tel, tipo, saldoDevedor, totalPegou, totalGuias } = item;
+        const isDebito = saldoDevedor > 0;
+        const tipoLabel = getTipoClienteLabel(tipo);
+        const tipoClasses = tipo === 'assistencia' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950 dark:text-blue-300' : 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300';
+
+        return `
+          <div onclick="abrirDetalhesCliente('${id}')" class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all cursor-pointer relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-2 h-full ${isDebito ? 'bg-amber-500' : 'bg-emerald-500'}"></div>
+            <div class="flex items-start justify-between gap-3">
+              <div class="min-w-0">
+                <h3 class="font-bold text-slate-900 dark:text-white text-base group-hover:text-executive-primary transition-colors truncate">${escaparHTML(nome)}</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 flex items-center gap-1.5"><i class="fa-solid fa-phone text-slate-400"></i> ${escaparHTML(tel)}</p>
+              </div>
+              <span class="px-2 py-1 rounded-full text-[9px] font-bold whitespace-nowrap ${tipoClasses}">${tipoLabel}</span>
+            </div>
+            
+            <div class="mt-3 flex items-center justify-between">
+              <span class="px-2 py-0.5 rounded font-bold text-[10px] ${isDebito ? 'bg-amber-100 text-amber-700 dark:bg-amber-950/60 dark:text-amber-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/60 dark:text-emerald-300'}">${isDebito ? 'EM DÉBITO' : 'QUITADO'}</span>
+            </div>
+
+            <!-- Dados extras: Total Pegou e Guias -->
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/60 grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block">Total Pegou</span>
+                <p class="text-sm font-black text-slate-800 dark:text-slate-200 mt-0.5">${formatarMoeda(totalPegou)}</p>
+              </div>
+              <div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold block">Fios / Guias</span>
+                <p class="text-sm font-black text-slate-800 dark:text-slate-200 mt-0.5">${totalGuias} item(s)</p>
+              </div>
+            </div>
+
+            <div class="mt-3 pt-3 border-t border-slate-100 dark:border-slate-800/60 flex justify-between items-end">
+              <div>
+                <span class="text-[10px] uppercase tracking-wider text-slate-400 font-semibold">Saldo Devedor Atual</span>
+                <p class="text-lg font-black ${isDebito ? 'text-amber-600 dark:text-amber-400' : 'text-emerald-600 dark:text-emerald-400'}">${formatarMoeda(saldoDevedor)}</p>
+              </div>
+              <span class="text-xs text-executive-primary font-semibold flex items-center gap-1 group-hover:translate-x-1 transition-transform">Ver Conta <i class="fa-solid fa-chevron-right text-[10px]"></i></span>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function abrirDetalhesCliente(clienteId) {
+      window.appState.clienteSelecionadoId = clienteId;
+      document.getElementById('view-clientes-lista').classList.add('hidden');
+      document.getElementById('view-cliente-detalhes').classList.remove('hidden');
+      renderDetalhesCliente();
+    }
+
+    function fecharDetalhesCliente() {
+      window.appState.clienteSelecionadoId = null;
+      document.getElementById('view-cliente-detalhes').classList.add('hidden');
+      document.getElementById('view-clientes-lista').classList.remove('hidden');
+    }
+
+    function renderDetalhesCliente() {
+      const id = window.appState.clienteSelecionadoId;
+      if (!id) return;
+      const c = (window.appState.clientes || {})[id];
+      if (!c) { fecharDetalhesCliente(); return; }
+
+      document.getElementById('detalhe-cliente-nome').innerText = c.nome;
+      document.getElementById('detalhe-cliente-tel').querySelector('span').innerText = c.telefone || 'Sem telefone';
+
+      let totalComprado = 0, totalPago = 0;
+      const transacoesCliente = listarTransacoesNormalizadas().filter(t => String(t.clienteId ?? '') === String(id));
+
+      transacoesCliente.forEach(t => {
+        if (t.tipoNormalizado === 'compra') totalComprado += t.valorNumerico;
+        if (t.tipoNormalizado === 'pagamento') totalPago += t.valorNumerico;
+      });
+
+      const saldoDevedor = totalComprado - totalPago;
+
+      document.getElementById('detalhe-total-comprado').innerText = formatarMoeda(totalComprado);
+      document.getElementById('detalhe-total-pago').innerText = formatarMoeda(totalPago);
+      document.getElementById('detalhe-saldo-devedor').innerText = formatarMoeda(saldoDevedor);
+
+      const statusBar = document.getElementById('detalhe-status-bar');
+      if (statusBar) statusBar.className = `absolute top-0 right-0 w-2 h-full ${saldoDevedor > 0 ? 'bg-amber-500' : 'bg-emerald-500'}`;
+
+      transacoesCliente.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
+      const tbody = document.getElementById('tbody-extrato-cliente');
+
+      if (transacoesCliente.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400 text-xs">Nenhum lançamento efetuado nesta conta ainda.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = transacoesCliente.map(t => {
+        const isCompra = t.tipoNormalizado === 'compra';
+        const dataStr = t.data ? new Date(t.data).toLocaleString('pt-BR') : 'Data não informada';
+        return `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+            <td class="p-3 text-slate-500 dark:text-slate-400 whitespace-nowrap">${dataStr}</td>
+            <td class="p-3 whitespace-nowrap">
+              <span class="px-2 py-0.5 rounded font-bold text-[10px] ${isCompra ? 'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300' : 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'}">${isCompra ? 'DÉBITO' : 'CRÉDITO'}</span>
+            </td>
+            <td class="p-3 font-medium text-slate-800 dark:text-slate-200">
+              ${escaparHTML(t.descricao || (isCompra ? 'Compra de Fio' : 'Pagamento'))}
+              ${t.quantidade ? `<span class="text-slate-400 font-normal">(${t.quantidade}x)</span>` : ''}
+            </td>
+            <td class="p-3 text-right font-bold whitespace-nowrap ${isCompra ? 'text-rose-600 dark:text-rose-400' : 'text-emerald-600 dark:text-emerald-400'}">${isCompra ? '+ ' : '- '}${formatarMoeda(t.valorNumerico)}</td>
+            <td class="p-3 text-center no-print">
+              <button onclick="excluirTransacao('${t.id}')" title="Excluir" class="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400"><i class="fa-solid fa-trash-can"></i></button>
+            </td>
+          </tr>`;
+      }).join('');
+    }
+
+    function openModalCliente(id = null, tipoInicial = 'filho-santo') {
+      const modal = document.getElementById('modal-cliente');
+      document.getElementById('form-cliente').reset();
+      const tipoEl = document.getElementById('modal-cliente-tipo');
+
+      if (id) {
+        document.getElementById('modal-cliente-titulo').innerText = "Editar Cadastro";
+        const c = window.appState.clientes[id] || {};
+        document.getElementById('modal-cliente-id').value = id;
+        document.getElementById('modal-cliente-nome').value = c.nome || '';
+        document.getElementById('modal-cliente-tel').value = c.telefone || '';
+        document.getElementById('modal-cliente-obs').value = c.observacoes || '';
+        tipoEl.value = getTipoCliente(c);
+      } else {
+        document.getElementById('modal-cliente-titulo').innerText = "Novo Cadastro";
+        document.getElementById('modal-cliente-id').value = '';
+        tipoEl.value = tipoInicial;
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function closeModalCliente() { document.getElementById('modal-cliente').classList.add('hidden'); }
+
+    function salvarCliente(e) {
+      e.preventDefault();
+      const id = document.getElementById('modal-cliente-id').value;
+      const nome = document.getElementById('modal-cliente-nome').value.trim();
+      const telefone = document.getElementById('modal-cliente-tel').value.trim();
+      const tipo = document.getElementById('modal-cliente-tipo').value;
+      const observacoes = document.getElementById('modal-cliente-obs').value.trim();
+
+      if (!nome) return;
+
+      const payload = { nome, telefone, tipo, observacoes, atualizadoEm: new Date().toISOString() };
+
+      if (id) {
+        window.dbUpdate(window.dbRef(window.db, `clientes/${id}`), payload).then(() => closeModalCliente());
+      } else {
+        payload.criadoEm = new Date().toISOString();
+        window.dbSet(window.dbPush(window.dbRef(window.db, 'clientes')), payload).then(() => closeModalCliente());
+      }
+    }
+
+    function editarClienteAtual() { openModalCliente(window.appState.clienteSelecionadoId); }
+    function excluirClienteAtual() {
+      const id = window.appState.clienteSelecionadoId;
+      if (id && confirm('Excluir este cliente? Históricos continuarão no banco.')) {
+        window.dbRemove(window.dbRef(window.db, `clientes/${id}`)).then(() => fecharDetalhesCliente());
+      }
+    }
+
+    let sacolaCompra = [];
+
+    function popularSelectProdutosCompra() {
+      const select = document.getElementById('compra-select-produto');
+      if (!select) return;
+      const produtos = window.appState.produtos || {};
+      let html = '<option value="">-- Item Avulso --</option>';
+      Object.keys(produtos).forEach(pid => {
+        const p = produtos[pid];
+        html += `<option value="${pid}">${escaparHTML(p.nome)} - ${formatarMoeda(p.precoUnitario)}</option>`;
+      });
+      select.innerHTML = html;
+    }
+
+    function selecionarProdutoCompra() {
+      const pid = document.getElementById('compra-select-produto').value;
+      const descEl = document.getElementById('compra-descricao');
+      const valorEl = document.getElementById('compra-valor-unit');
+      if (!pid) { descEl.value = ''; valorEl.value = ''; valorEl.dataset.baseValue = ''; calcularTotalCompra(); return; }
+      const p = (window.appState.produtos || {})[pid];
+      if (p) {
+        descEl.value = p.nome || '';
+        valorEl.value = parseFloat(p.precoUnitario || 0).toFixed(2);
+        valorEl.dataset.baseValue = valorEl.value;
+        calcularTotalCompra();
+      }
+    }
+
+    function alterarValorBaseCompra() {
+      const valorEl = document.getElementById('compra-valor-unit');
+      valorEl.dataset.baseValue = (parseFloat(valorEl.value) || 0).toFixed(2);
+      calcularTotalCompra();
+    }
+
+    function obterDadosItemCompra() {
+      const produtoId = document.getElementById('compra-select-produto').value || null;
+      const descricaoDigitada = document.getElementById('compra-descricao').value.trim();
+      const pSel = produtoId ? (window.appState.produtos || {})[produtoId] : null;
+      const descricao = descricaoDigitada || (pSel && pSel.nome) || 'Item avulso';
+      const qtd = Math.max(1, parseInt(document.getElementById('compra-qtd').value, 10) || 1);
+      const valorEl = document.getElementById('compra-valor-unit');
+      const base = parseFloat(valorEl.dataset.baseValue) || parseFloat(valorEl.value) || 0;
+      const firma = document.getElementById('compra-select-firma').value;
+      const pingente = document.getElementById('compra-select-pingente').value;
+      const adFirma = firma === 'com-firma' ? 5 : 0;
+      const adPingente = pingente === 'com-pingente' ? 5 : 0;
+      const valorUnit = base + adFirma + adPingente;
+      return { produtoId, descricao, qtd, base, firma, pingente, adFirma, adPingente, valorUnit, valorTotal: qtd * valorUnit };
+    }
+
+    function calcularTotalCompra() {
+      const item = obterDadosItemCompra();
+      document.getElementById('compra-valor-total').value = formatarMoeda(item.valorTotal);
+    }
+
+    function adicionarItemSacola() {
+      const item = obterDadosItemCompra();
+      if (item.valorTotal <= 0) return alert('Informe um valor unitário maior que zero.');
+      sacolaCompra.push({ ...item, chave: `${Date.now()}` });
+      renderSacolaCompra();
+      document.getElementById('compra-select-produto').value = '';
+      document.getElementById('compra-descricao').value = '';
+      document.getElementById('compra-qtd').value = '1';
+      document.getElementById('compra-valor-unit').value = '';
+      document.getElementById('compra-valor-total').value = formatarMoeda(0);
+    }
+
+    function removerItemSacola(chave) {
+      sacolaCompra = sacolaCompra.filter(i => i.chave !== chave);
+      renderSacolaCompra();
+    }
+
+    function renderSacolaCompra() {
+      const lista = document.getElementById('sacola-itens');
+      const total = sacolaCompra.reduce((s, i) => s + i.valorTotal, 0);
+      document.getElementById('sacola-contagem').textContent = `${sacolaCompra.length} itens`;
+      document.getElementById('sacola-total').textContent = formatarMoeda(total);
+      if (!sacolaCompra.length) { lista.innerHTML = '<p class="text-xs text-slate-400">Sacola vazia.</p>'; return; }
+      lista.innerHTML = sacolaCompra.map(item => `
+        <div class="flex items-center justify-between py-1.5 border-b border-slate-100 dark:border-slate-800">
+          <div><p class="font-bold text-xs">${escaparHTML(item.descricao)}</p><p class="text-[10px] text-slate-400">${item.qtd}x ${formatarMoeda(item.valorUnit)}</p></div>
+          <div class="text-right"><strong>${formatarMoeda(item.valorTotal)}</strong><button type="button" onclick="removerItemSacola('${item.chave}')" class="block text-[10px] text-rose-500">Remover</button></div>
+        </div>`).join('');
+    }
+
+    function salvarLancamentoCompra(e) {
+      e.preventDefault();
+      const clienteId = window.appState.clienteSelecionadoId;
+      if (!clienteId) return;
+      if (!sacolaCompra.length) {
+        const item = obterDadosItemCompra();
+        if (item.valorTotal <= 0) return alert('Adicione itens válidos.');
+        sacolaCompra.push({ ...item, chave: `${Date.now()}` });
+      }
+      const data = new Date().toISOString();
+      Promise.all(sacolaCompra.map(item => {
+        return window.dbSet(window.dbPush(window.dbRef(window.db, 'transacoes')), {
+          clienteId, tipo: 'compra', descricao: item.descricao, produtoId: item.produtoId,
+          quantidade: item.qtd, valorBase: item.base, valorUnitario: item.valorUnit, valor: item.valorTotal, data
+        });
+      })).then(() => {
+        sacolaCompra = [];
+        document.getElementById('form-nova-compra').reset();
+        renderSacolaCompra();
+      });
+    }
+
+    let sacolaFioDireto = [], pessoaSacolaFioDireto = '';
+
+    function popularSelectsFioDireto() {
+      const cSelect = document.getElementById('direto-cliente');
+      const pSelect = document.getElementById('direto-produto');
+      if (!cSelect || !pSelect) return;
+      const clientes = Object.entries(window.appState.clientes || {}).sort((a,b) => String(a[1]?.nome).localeCompare(String(b[1]?.nome)));
+      cSelect.innerHTML = '<option value="">Selecione uma pessoa...</option>' + clientes.map(([id,c]) => `<option value="${id}">${escaparHTML(c.nome)}</option>`).join('');
+      const produtos = Object.entries(window.appState.produtos || {});
+      pSelect.innerHTML = '<option value="">Selecione um fio...</option>' + produtos.map(([id,p]) => `<option value="${id}">${escaparHTML(p.nome)} - ${formatarMoeda(p.precoUnitario)}</option>`).join('');
+    }
+
+    function protegerPessoaSacolaFioDireto() {
+      const select = document.getElementById('direto-cliente');
+      if (sacolaFioDireto.length && pessoaSacolaFioDireto && select.value !== pessoaSacolaFioDireto) {
+        alert('A sacola pertence a outra pessoa.');
+        select.value = pessoaSacolaFioDireto;
+      } else { pessoaSacolaFioDireto = select.value; }
+    }
+
+    function atualizarFioDireto() {
+      const id = document.getElementById('direto-produto')?.value;
+      const p = (window.appState.produtos || {})[id];
+      const vEl = document.getElementById('direto-valor-unit');
+      if (p && vEl) vEl.value = parseFloat(p.precoUnitario || 0).toFixed(2);
+      calcularFioDireto();
+    }
+
+    function calcularFioDireto() {
+      const vEl = document.getElementById('direto-valor-unit');
+      const qtd = Math.max(1, parseInt(document.getElementById('direto-qtd')?.value, 10) || 1);
+      const base = parseFloat(vEl?.value) || 0;
+      const adFirma = document.getElementById('direto-firma')?.value === 'com-firma' ? 5 : 0;
+      const adPingente = document.getElementById('direto-pingente')?.value === 'com-pingente' ? 5 : 0;
+      document.getElementById('direto-total').textContent = formatarMoeda((base + adFirma + adPingente) * qtd);
+    }
+
+    function adicionarFioDiretoSacola() {
+      const clienteId = document.getElementById('direto-cliente').value;
+      if (!clienteId) return alert('Selecione uma pessoa.');
+      const pId = document.getElementById('direto-produto').value;
+      const p = (window.appState.produtos || {})[pId] || {};
+      const qtd = parseInt(document.getElementById('direto-qtd').value, 10);
+      const base = parseFloat(document.getElementById('direto-valor-unit').value) || 0;
+      const adFirma = document.getElementById('direto-firma').value === 'com-firma' ? 5 : 0;
+      const adPingente = document.getElementById('direto-pingente').value === 'com-pingente' ? 5 : 0;
+      const unit = base + adFirma + adPingente;
+      if (!pId || base <= 0) return alert('Selecione um fio válido.');
+
+      pessoaSacolaFioDireto = clienteId;
+      sacolaFioDireto.push({ produtoId: pId, descricao: p.nome || 'Fio de conta', qtd, valorUnitario: unit, valorTotal: unit * qtd, chave: `${Date.now()}` });
+      renderSacolaFioDireto();
+    }
+
+    function removerFioDiretoSacola(chave) {
+      sacolaFioDireto = sacolaFioDireto.filter(i => i.chave !== chave);
+      if (!sacolaFioDireto.length) pessoaSacolaFioDireto = '';
+      renderSacolaFioDireto();
+    }
+
+    function renderSacolaFioDireto() {
+      const lista = document.getElementById('direto-sacola-itens');
+      const total = sacolaFioDireto.reduce((s, i) => s + i.valorTotal, 0);
+      document.getElementById('direto-sacola-contagem').textContent = `${sacolaFioDireto.length} itens`;
+      document.getElementById('direto-sacola-total').textContent = formatarMoeda(total);
+      if (!sacolaFioDireto.length) { lista.innerHTML = '<p class="text-xs text-slate-400">Sacola vazia.</p>'; return; }
+      lista.innerHTML = sacolaFioDireto.map(i => `<div class="flex justify-between py-1 border-b border-slate-100 dark:border-slate-800"><p class="text-xs">${escaparHTML(i.descricao)} (${i.qtd}x)</p><strong>${formatarMoeda(i.valorTotal)}</strong></div>`).join('');
+    }
+
+    async function salvarFioDireto(e) {
+      e.preventDefault();
+      const clienteId = document.getElementById('direto-cliente').value;
+      if (!clienteId || !sacolaFioDireto.length) return alert('Selecione a pessoa e adicione itens à sacola.');
+      const data = new Date().toISOString();
+      await Promise.all(sacolaFioDireto.map(i => {
+        return window.dbSet(window.dbPush(window.dbRef(window.db, 'transacoes')), {
+          clienteId, tipo: 'compra', descricao: i.descricao, quantidade: i.qtd, valorUnitario: i.valorUnitario, valor: i.valorTotal, data
+        });
+      }));
+      sacolaFioDireto = []; pessoaSacolaFioDireto = '';
+      renderSacolaFioDireto();
+      document.getElementById('form-lancar-fio-direto').reset();
+    }
+
+    function renderListaQuitar() {
+      const container = document.getElementById('quitar-lista');
+      if (!container) return;
+      const clientes = window.appState.clientes || {};
+      const busca = (document.getElementById('quitar-busca')?.value || '').toLowerCase();
+      const pendentes = Object.entries(clientes).map(([id, c]) => ({ id, c, saldo: calcularSaldoCliente(id) })).filter(i => i.saldo > 0);
+
+      document.getElementById('quitar-total-pendente').textContent = formatarMoeda(pendentes.reduce((s,i) => s + i.saldo, 0));
+      document.getElementById('quitar-qtd-pendentes').textContent = pendentes.length;
+
+      const filtrados = pendentes.filter(i => i.c.nome.toLowerCase().includes(busca));
+      if (!filtrados.length) { container.innerHTML = `<p class="text-center py-6 text-xs text-slate-400">Nenhuma dívida pendente.</p>`; return; }
+      container.innerHTML = filtrados.map(({id, c, saldo}) => `
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 gap-3">
+          <div><p class="font-bold text-sm">${escaparHTML(c.nome)}</p><p class="text-xs text-amber-600 font-bold mt-1">Débito: ${formatarMoeda(saldo)}</p></div>
+          <div class="flex gap-2 w-full sm:w-auto"><button onclick="abrirPagamentoParcial('${id}')" class="px-3 py-2 rounded-xl bg-blue-50 text-blue-700 dark:bg-blue-950 dark:text-blue-300 text-xs font-semibold flex-1">Parcial</button><button onclick="confirmarQuitacaoTotal('${id}')" class="px-3 py-2 rounded-xl bg-emerald-600 text-white text-xs font-semibold flex-1">Quitar Tudo</button></div>
+        </div>`).join('');
+    }
+
+    let clientePagamentoParcialId = null;
+
+    function abrirPagamentoParcial(clienteId) {
+      const c = (window.appState.clientes || {})[clienteId];
+      const saldo = calcularSaldoCliente(clienteId);
+      clientePagamentoParcialId = clienteId;
+      document.getElementById('parcial-cliente-nome').textContent = c.nome;
+      document.getElementById('parcial-saldo-atual').textContent = formatarMoeda(saldo);
+      document.getElementById('modal-pagamento-parcial').classList.remove('hidden');
+    }
+
+    function fecharPagamentoParcial() { document.getElementById('modal-pagamento-parcial').classList.add('hidden'); }
+
+    async function confirmarPagamentoParcial(e) {
+      e.preventDefault();
+      const val = parseFloat(document.getElementById('parcial-valor').value) || 0;
+      if (val <= 0) return;
+      await window.dbSet(window.dbPush(window.dbRef(window.db, 'transacoes')), {
+        clienteId: clientePagamentoParcialId, tipo: 'pagamento', formaPagamento: 'Parcial', valor: val, data: new Date().toISOString()
+      });
+      fecharPagamentoParcial();
+      renderListaQuitar();
+    }
+
+    async function confirmarQuitacaoTotal(clienteId) {
+      const saldo = calcularSaldoCliente(clienteId);
+      if (saldo <= 0) return;
+      if (confirm(`Quitar o valor total de ${formatarMoeda(saldo)}?`)) {
+        await window.dbSet(window.dbPush(window.dbRef(window.db, 'transacoes')), {
+          clienteId, tipo: 'pagamento', formaPagamento: 'Quitação Total', valor: saldo, data: new Date().toISOString()
+        });
+        renderListaQuitar();
+      }
+    }
+
+    function preencherQuitarTudo() {
+      const id = window.appState.clienteSelecionadoId;
+      if (!id) return;
+      document.getElementById('pagamento-valor').value = calcularSaldoCliente(id).toFixed(2);
+    }
+
+    function salvarLancamentoPagamento(e) {
+      e.preventDefault();
+      const clienteId = window.appState.clienteSelecionadoId;
+      const valor = parseFloat(document.getElementById('pagamento-valor').value) || 0;
+      const forma = document.getElementById('pagamento-forma').value;
+      const obs = document.getElementById('pagamento-obs').value.trim();
+      if (valor <= 0 || !clienteId) return;
+
+      window.dbSet(window.dbPush(window.dbRef(window.db, 'transacoes')), {
+        clienteId, tipo: 'pagamento', formaPagamento: forma, observacao: obs, valor, data: new Date().toISOString()
+      }).then(() => document.getElementById('form-novo-pagamento').reset());
+    }
+
+    function excluirTransacao(transacaoId) {
+      if (confirm('Excluir este lançamento?')) window.dbRemove(window.dbRef(window.db, `transacoes/${transacaoId}`));
+    }
+
+    function exportarContaPDF() { window.print(); }
+    function exportarRelatorioPDF() { window.print(); }
+
+    function renderProdutos() {
+      const grid = document.getElementById('grid-produtos');
+      const emptyState = document.getElementById('empty-produtos');
+      const busca = (document.getElementById('input-busca-produto')?.value || '').toLowerCase();
+      const catFiltro = document.getElementById('select-filtro-categoria-produto')?.value;
+
+      const produtos = window.appState.produtos || {};
+      const pIds = Object.keys(produtos);
+      if (pIds.length === 0) { grid.innerHTML = ''; emptyState.classList.remove('hidden'); return; }
+      emptyState.classList.add('hidden');
+
+      let html = '';
+      pIds.forEach(id => {
+        const p = produtos[id];
+        if (busca && !p.nome.toLowerCase().includes(busca) && !p.sku.toLowerCase().includes(busca)) return;
+        if (catFiltro !== 'todas' && p.categoriaId !== catFiltro) return;
+        const catNome = (window.appState.categorias[p.categoriaId] || {}).nome || 'Sem Categoria';
+
+        html += `
+          <div class="bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between">
+                <span class="px-2 py-0.5 rounded text-[9px] font-bold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">${escaparHTML(catNome)}</span>
+                <span class="text-xs text-slate-400">Estoque: ${p.estoque || 0}</span>
+              </div>
+              <h3 class="font-bold text-slate-900 dark:text-white text-base mt-2">${escaparHTML(p.nome)}</h3>
+              <p class="text-[11px] font-semibold text-slate-400">SKU: ${escaparHTML(p.sku)}</p>
+            </div>
+            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <span class="text-lg font-black">${formatarMoeda(p.precoUnitario)}</span>
+              <div class="flex space-x-1">
+                <button onclick="openModalProduto('${id}')" class="p-1.5 text-slate-400 hover:text-slate-600"><i class="fa-solid fa-pen-to-square"></i></button>
+                <button onclick="excluirProduto('${id}')" class="p-1.5 text-slate-400 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+              </div>
+            </div>
+          </div>`;
+      });
+      grid.innerHTML = html;
+    }
+
+    function openModalProduto(id = null) {
+      const modal = document.getElementById('modal-produto');
+      document.getElementById('form-produto').reset();
+      const selectCat = document.getElementById('modal-produto-categoria');
+      const cats = window.appState.categorias || {};
+      selectCat.innerHTML = Object.keys(cats).map(cid => `<option value="${cid}">${escaparHTML(cats[cid].nome)}</option>`).join('');
+
+      if (id) {
+        document.getElementById('modal-produto-titulo').innerText = "Editar Fio de Conta";
+        const p = window.appState.produtos[id];
+        document.getElementById('modal-produto-id').value = id;
+        document.getElementById('modal-produto-sku').value = p.sku || '';
+        document.getElementById('modal-produto-nome').value = p.nome || '';
+        document.getElementById('modal-produto-categoria').value = p.categoriaId || '';
+        document.getElementById('modal-produto-preco').value = p.precoUnitario || '';
+        document.getElementById('modal-produto-estoque').value = p.estoque || 0;
+        document.getElementById('modal-produto-descricao').value = p.descricao || '';
+      } else {
+        document.getElementById('modal-produto-titulo').innerText = "Cadastrar Fio de Conta";
+        document.getElementById('modal-produto-id').value = '';
+      }
+      modal.classList.remove('hidden');
+    }
+
+    function closeModalProduto() { document.getElementById('modal-produto').classList.add('hidden'); }
+
+    function salvarProduto(e) {
+      e.preventDefault();
+      const id = document.getElementById('modal-produto-id').value;
+      const sku = document.getElementById('modal-produto-sku').value.trim().toUpperCase();
+      const nome = document.getElementById('modal-produto-nome').value.trim();
+      const categoriaId = document.getElementById('modal-produto-categoria').value;
+      const precoUnitario = parseFloat(document.getElementById('modal-produto-preco').value) || 0;
+      const estoque = parseInt(document.getElementById('modal-produto-estoque').value) || 0;
+      const descricao = document.getElementById('modal-produto-descricao').value.trim();
+
+      if (!nome || !sku) return;
+
+      const payload = { sku, nome, categoriaId, precoUnitario, estoque, descricao, atualizadoEm: new Date().toISOString() };
+      if (id) {
+        window.dbUpdate(window.dbRef(window.db, `produtos/${id}`), payload).then(() => closeModalProduto());
+      } else {
+        payload.criadoEm = new Date().toISOString();
+        window.dbSet(window.dbPush(window.dbRef(window.db, 'produtos')), payload).then(() => closeModalProduto());
+      }
+    }
+
+    function excluirProduto(id) {
+      if (confirm('Excluir este produto?')) window.dbRemove(window.dbRef(window.db, `produtos/${id}`));
+    }
+
+    function renderCategorias() {
+      const grid = document.getElementById('grid-categorias');
+      const emptyState = document.getElementById('empty-categorias');
+      const cats = window.appState.categorias || {};
+      const catIds = Object.keys(cats);
+
+      if (catIds.length === 0) { grid.innerHTML = ''; emptyState.classList.remove('hidden'); return; }
+      emptyState.classList.add('hidden');
+
+      grid.innerHTML = catIds.map(id => `
+        <div class="bg-white dark:bg-slate-900 rounded-2xl p-4 border border-slate-200 dark:border-slate-800 shadow-sm flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-9 h-9 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center text-executive-primary dark:text-emerald-400">
+              <i class="fa-solid fa-folder"></i>
+            </div>
+            <h4 class="font-bold text-sm text-slate-900 dark:text-white">${escaparHTML(cats[id].nome)}</h4>
+          </div>
+          <button onclick="excluirCategoria('${id}')" class="p-2 text-slate-400 hover:text-rose-600"><i class="fa-solid fa-trash"></i></button>
+        </div>`).join('');
+    }
+
+    function atualizarFiltroCategorias() {
+      const select = document.getElementById('select-filtro-categoria-produto');
+      if (!select) return;
+      const cats = window.appState.categorias || {};
+      select.innerHTML = '<option value="todas">Todas as Categorias</option>' + Object.keys(cats).map(cid => `<option value="${cid}">${escaparHTML(cats[cid].nome)}</option>`).join('');
+    }
+
+    function openModalCategoria() { document.getElementById('form-categoria').reset(); document.getElementById('modal-categoria').classList.remove('hidden'); }
+    function closeModalCategoria() { document.getElementById('modal-categoria').classList.add('hidden'); }
+
+    function salvarCategoria(e) {
+      e.preventDefault();
+      const nome = document.getElementById('modal-categoria-nome').value.trim();
+      if (!nome) return;
+      window.dbSet(window.dbPush(window.dbRef(window.db, 'categorias')), { nome, criadoEm: new Date().toISOString() }).then(() => closeModalCategoria());
+    }
+
+    function excluirCategoria(id) {
+      if (confirm('Excluir esta categoria?')) window.dbRemove(window.dbRef(window.db, `categorias/${id}`));
+    }
+
+    function renderExtratoGeral() {
+      const tbody = document.getElementById('tbody-extrato-geral');
+      if (!tbody) return;
+      const filtroTipo = document.getElementById('filtro-extrato-tipo').value;
+      const clientes = window.appState.clientes || {};
+      const lista = listarTransacoesNormalizadas().filter(t => filtroTipo === 'todos' || t.tipoNormalizado === filtroTipo);
+
+      lista.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
+      if (lista.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">Nenhum registro.</td></tr>`; return; }
+
+      tbody.innerHTML = lista.map(t => {
+        const cNome = (clientes[t.clienteId] || {}).nome || 'Cliente Removido';
+        const isCompra = t.tipoNormalizado === 'compra';
+        return `
+          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+            <td class="p-3 text-slate-500 whitespace-nowrap">${t.data ? new Date(t.data).toLocaleString('pt-BR') : '—'}</td>
+            <td class="p-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">${escaparHTML(cNome)}</td>
+            <td class="p-3 whitespace-nowrap"><span class="px-2 py-0.5 rounded font-bold text-[10px] ${isCompra ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">${isCompra ? 'DÉBITO' : 'CRÉDITO'}</span></td>
+            <td class="p-3 text-slate-700 dark:text-slate-300">${escaparHTML(t.descricao || (isCompra ? 'Compra' : 'Pagamento'))}</td>
+            <td class="p-3 text-right font-bold whitespace-nowrap ${isCompra ? 'text-rose-600' : 'text-emerald-600'}">${isCompra ? '+ ' : '- '}${formatarMoeda(t.valorNumerico)}</td>
+          </tr>`;
+      }).join('');
+    }
+
+    function escaparHTML(str) {
+      return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    // Exportações para Global
+    Object.assign(window, {
+      switchTab, toggleMenuMaisMobile, selecionarOpcaoMais, formatarMoeda, atualizarEstatisticas, calcularSaldoCliente, contarGuiasCliente, totalGastoCliente, renderClientes, abrirDetalhesCliente, fecharDetalhesCliente, renderDetalhesCliente,
+      openModalCliente, closeModalCliente, salvarCliente, editarClienteAtual, excluirClienteAtual, popularSelectProdutosCompra, selecionarProdutoCompra,
+      adicionarItemSacola, removerItemSacola, renderSacolaCompra, alterarValorBaseCompra, calcularTotalCompra, salvarLancamentoCompra, preencherQuitarTudo,
+      salvarLancamentoPagamento, excluirTransacao, exportarContaPDF, exportarRelatorioPDF, renderProdutos, openModalProduto, closeModalProduto,
+      salvarProduto, excluirProduto, renderCategorias, atualizarFiltroCategorias, openModalCategoria, closeModalCategoria, salvarCategoria,
+      excluirCategoria, renderExtratoGeral, renderListaQuitar, abrirPagamentoParcial, fecharPagamentoParcial, confirmarPagamentoParcial,
+      confirmarQuitacaoTotal, popularSelectsFioDireto, protegerPessoaSacolaFioDireto, atualizarFioDireto, calcularFioDireto, adicionarFioDiretoSacola,
+      removerFioDiretoSacola, renderSacolaFioDireto, salvarFioDireto
+    });
+
+    let massaRegistros = [];
+    const modelosMassa = {
+      clientes: { cabecalho: ['nome','telefone','tipo','observacoes'], ajuda: 'Colunas: nome, telefone, tipo (filho-santo ou assistencia) e observacoes.' },
+      produtos: { cabecalho: ['sku','nome','categoria','precoUnitario','estoque','descricao'], ajuda: 'Colunas: sku, nome, categoria, precoUnitario, estoque, descricao.' },
+      transacoes: { cabecalho: ['cliente','tipo','descricao','quantidade','valorUnitario','valor','data'], ajuda: 'Colunas: cliente, tipo (compra ou pagamento), descricao, quantidade, valorUnitario, valor, data.' }
+    };
+
+    function atualizarAjudaMassa() {
+      const tipo = document.getElementById('massa-tipo')?.value || 'clientes';
+      document.getElementById('massa-ajuda').textContent = modelosMassa[tipo].ajuda;
+    }
+    function limparPreviewMassa() {
+      massaRegistros = [];
+      document.getElementById('massa-preview-wrap')?.classList.add('hidden');
+      document.getElementById('massa-importar-btn').disabled = true;
+    }
+    function limparMassa() {
+      document.getElementById('massa-dados').value = '';
+      document.getElementById('massa-arquivo').value = '';
+      limparPreviewMassa();
+    }
+    function baixarModeloMassa() {
+      const tipo = document.getElementById('massa-tipo').value;
+      const csv = modelosMassa[tipo].cabecalho.join(';') + '\r\n';
+      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `modelo-${tipo}.csv`; a.click();
+    }
+    function carregarExemploMassa() {
+      const tipo = document.getElementById('massa-tipo').value;
+      document.getElementById('massa-dados').value = modelosMassa[tipo].cabecalho.join(';') + '\nExemplo 1;11999998888;filho-santo;';
+      limparPreviewMassa();
+    }
+    async function lerArquivoMassa(e) {
+      const file = e.target.files?.[0]; if (!file) return;
+      limparPreviewMassa();
+      const text = await file.text();
+      previsualizarMassaTexto(text);
+    }
+    function previsualizarMassa() { previsualizarMassaTexto(document.getElementById('massa-dados').value); }
+    function previsualizarMassaTexto(texto) {
+      const linhas = texto.trim().split(/\r?\n/);
+      if (linhas.length < 2) return;
+      const headers = linhas.shift().split(/[;,]/).map(h => h.trim().toLowerCase());
+      massaRegistros = linhas.map(l => {
+        const cols = l.split(/[;,]/);
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = cols[i]?.trim() || '');
+        return obj;
+      });
+      const wrap = document.getElementById('massa-preview-wrap');
+      const head = document.getElementById('massa-preview-head');
+      const body = document.getElementById('massa-preview-body');
+      head.innerHTML = '<tr>' + headers.map(h => `<th class="p-2 font-bold">${escaparHTML(h)}</th>`).join('') + '</tr>';
+      body.innerHTML = massaRegistros.slice(0, 5).map(r => '<tr>' + headers.map(h => `<td class="p-2">${escaparHTML(r[h])}</td>`).join('') + '</tr>').join('');
+      wrap.classList.remove('hidden');
+      document.getElementById('massa-importar-btn').disabled = false;
+    }
+    async function importarMassa() {
+      const tipo = document.getElementById('massa-tipo').value;
+      const btn = document.getElementById('massa-importar-btn');
+      btn.disabled = true; btn.innerText = 'Importando...';
+      const agora = new Date().toISOString();
+      for (const r of massaRegistros) {
+        if (tipo === 'clientes' && r.nome) {
+          await window.dbSet(window.dbPush(window.dbRef(window.db, 'clientes')), { nome: r.nome, telefone: r.telefone || '', tipo: r.tipo || 'filho-santo', observacoes: r.observacoes || '', criadoEm: agora });
+        }
+      }
+      alert('Importação concluída!');
+      limparMassa();
+      btn.innerText = 'Importar para o Banco';
+    }
+
+    function exportarBackupJSON() {
+      const dados = JSON.stringify(window.appState, null, 2);
+      const blob = new Blob([dados], { type: 'application/json' });
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'backup.json'; a.click();
+    }
+
+    async function confirmarLimpeza(tipo) {
+      if (confirm('Tem certeza de que deseja apagar os registros? Esta ação não pode ser desfeita.')) {
+        if (tipo === 'tudo') {
+          await window.dbSet(window.dbRef(window.db, 'clientes'), null);
+          await window.dbSet(window.dbRef(window.db, 'produtos'), null);
+          await window.dbSet(window.dbRef(window.db, 'categorias'), null);
+          await window.dbSet(window.dbRef(window.db, 'transacoes'), null);
+        } else {
+          await window.dbSet(window.dbRef(window.db, tipo), null);
+        }
+        alert('Operação efetuada!');
+      }
+    }
+
+    window.atualizarAjudaMassa = atualizarAjudaMassa;
+    window.limparPreviewMassa = limparPreviewMassa;
+    window.limparMassa = limparMassa;
+    window.baixarModeloMassa = baixarModeloMassa;
+    window.carregarExemploMassa = carregarExemploMassa;
+    window.lerArquivoMassa = lerArquivoMassa;
+    window.previsualizarMassa = previsualizarMassa;
+    window.importarMassa = importarMassa;
+    window.exportarBackupJSON = exportarBackupJSON;
+    window.confirmarLimpeza = confirmarLimpeza;
+
+    atualizarAjudaMassa();
+  </script>
+</body>
+</html>
