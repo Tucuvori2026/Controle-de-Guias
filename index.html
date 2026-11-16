@@ -209,7 +209,119 @@
       #sec-encomendas .enc-panel > .grid { grid-template-columns:minmax(0,1fr) !important; }
     }
 
-  </style>
+
+    /* RESPONSIVIDADE COMPLETA — reforço para celular, tablet e desktop */
+    *,*::before,*::after { box-sizing:border-box; }
+    html { width:100%; max-width:100%; overflow-x:clip; }
+    body { width:100%; max-width:100%; min-width:0; overflow-x:clip; }
+    img,svg,canvas,video { max-width:100%; height:auto; }
+    main,.max-w-7xl,.tab-content,.tab-content > *,#sec-encomendas > *,
+    .tab-content .rounded-2xl,.tab-content .rounded-xl { min-width:0; }
+    .tab-content { width:100%; }
+    .tab-content [class*="flex"] { min-width:0; }
+    .tab-content .flex:not(.flex-col) { flex-wrap:wrap; }
+    .tab-content .flex > * { min-width:0; }
+    .tab-content input,.tab-content select,.tab-content textarea { min-width:0; max-width:100%; }
+    .tab-content button { max-width:100%; overflow-wrap:anywhere; }
+    .tab-content pre,.tab-content code { max-width:100%; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .overflow-x-auto { width:100%; max-width:100%; overflow-x:auto !important; overscroll-behavior-x:contain; }
+    .overflow-x-auto table { width:max-content; min-width:100%; }
+    .tab-content table { border-collapse:separate; border-spacing:0; }
+    .tab-content td,.tab-content th { overflow-wrap:anywhere; }
+    .desktop-navigation { width:100%; }
+    .desktop-navigation .tab-btn { flex:1 1 150px; min-width:0 !important; white-space:normal; line-height:1.25; }
+    .mobile-bottom-nav { padding-left:max(8px,env(safe-area-inset-left)); padding-right:max(8px,env(safe-area-inset-right)); padding-bottom:calc(8px + env(safe-area-inset-bottom)); }
+    .mobile-bottom-nav > div { width:100%; max-width:620px; margin-inline:auto; }
+    .mobile-bottom-nav button { min-width:0; padding-inline:2px; }
+    .mobile-bottom-nav span { max-width:100%; overflow-wrap:anywhere; }
+    .enc-subnav { max-width:100%; }
+
+    @media (max-width:767px) {
+      body { padding-bottom:calc(82px + env(safe-area-inset-bottom)) !important; }
+      header { position:sticky; top:0; z-index:30; }
+      header > div, header .max-w-7xl { min-width:0; width:100%; }
+      header .max-w-7xl { padding-inline:12px !important; }
+      header .max-w-7xl > div { min-width:0; gap:8px; }
+      header h1 { max-width:58vw; font-size:clamp(12px,3.4vw,15px) !important; overflow-wrap:anywhere; }
+      header #firebase-status { max-width:38vw; min-width:0; }
+      .max-w-7xl.w-full.mx-auto { width:100%; padding-inline:12px !important; padding-top:14px !important; gap:16px !important; }
+      main { width:100%; min-width:0; }
+      .tab-content { width:100%; min-width:0; }
+      .tab-content .grid { grid-template-columns:minmax(0,1fr) !important; }
+      .tab-content .grid.grid-cols-2 { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+      #sec-encomendas .enc-kpis { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+      #sec-encomendas .enc-panel > .grid,
+      #sec-encomendas .grid.grid-cols-1.xl\:grid-cols-2 { grid-template-columns:minmax(0,1fr) !important; }
+      .tab-content .flex:not(.flex-col) { flex-wrap:wrap; }
+      .tab-content .flex > * { max-width:100%; }
+      .tab-content .flex.flex-col.sm\:flex-row > *,
+      .tab-content .flex.flex-col.lg\:flex-row > * { width:100%; }
+      .tab-content .flex.flex-col.sm\:flex-row > button,
+      .tab-content .flex.flex-col.lg\:flex-row > button { width:100%; }
+      .tab-content .overflow-x-auto { width:100%; max-width:100%; margin-inline:0; }
+      .tab-content .overflow-x-auto table { min-width:600px; }
+      #sec-encomendas .overflow-x-auto table { min-width:640px; }
+      .tab-content .rounded-2xl,.tab-content .rounded-xl { max-width:100%; }
+      .tab-content .p-6 { padding:14px !important; }
+      .tab-content .p-5 { padding:13px !important; }
+      .tab-content h2 { font-size:clamp(19px,5vw,23px) !important; }
+      .tab-content h3 { overflow-wrap:anywhere; }
+      .tab-content .text-3xl { font-size:1.55rem; line-height:1.2; }
+      .tab-content .text-2xl { font-size:1.3rem; line-height:1.25; }
+      .tab-content .grid.grid-cols-2 > * { min-width:0; }
+      #view-cliente-detalhes > .flex { flex-wrap:wrap; }
+      #view-cliente-detalhes > .flex > div:last-child { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); width:100%; }
+      #modal-mais-mobile,#modal-pagamento-parcial { padding:0; }
+      #modal-mais-mobile > div,#modal-pagamento-parcial > div { width:100%; max-width:100%; max-height:88dvh; overflow-y:auto; border-radius:22px 22px 0 0; padding-bottom:calc(18px + env(safe-area-inset-bottom)); }
+      .enc-hero { padding:17px 15px !important; }
+      .enc-hero > * { min-width:0; }
+      .enc-subnav { gap:6px; }
+      .enc-subnav button { flex:0 0 auto; }
+    }
+    @media (max-width:420px) {
+      .max-w-7xl.w-full.mx-auto { padding-inline:9px !important; }
+      header .max-w-7xl { padding-inline:9px !important; }
+      .tab-content .grid.grid-cols-2,
+      #sec-encomendas .enc-kpis { grid-template-columns:minmax(0,1fr) !important; }
+      .tab-content .flex.gap-2 > button { flex:1 1 100%; }
+      .mobile-bottom-nav { padding-inline:4px; }
+      .mobile-bottom-nav span { font-size:9px; }
+    }
+    @media (min-width:768px) and (max-width:1023px) {
+      .max-w-7xl.w-full.mx-auto { padding-inline:18px; }
+      .desktop-navigation .tab-btn { flex:1 1 28%; min-width:0 !important; padding:10px 8px !important; font-size:12px !important; }
+      .tab-content .grid.grid-cols-1.lg\:grid-cols-2,
+      .tab-content .grid.grid-cols-1.xl\:grid-cols-2 { grid-template-columns:repeat(2,minmax(0,1fr)); }
+    }
+    @media (min-width:1024px) {
+      .max-w-7xl.w-full.mx-auto { width:min(100%,1440px); }
+      .desktop-navigation .tab-btn { flex:1 1 auto; }
+    }
+    @media (hover:none) {
+      button:hover { transform:none; }
+      .tab-content button,.mobile-bottom-nav button { -webkit-tap-highlight-color:transparent; }
+    }
+
+  
+/* Ajuste mobile da fila de produção: substitui a tabela larga por cards */
+.fila-producao-mobile{display:none}
+@media(max-width:767px){
+  html,body{max-width:100%;overflow-x:hidden}
+  #sec-encomendas,#sec-encomendas .enc-panel,#sec-encomendas .grid{min-width:0;max-width:100%}
+  #sec-encomendas .fila-producao-desktop{display:none}
+  #sec-encomendas .fila-producao-mobile{display:grid;gap:10px;padding:12px}
+  #sec-encomendas .fila-producao-card{min-width:0;border:1px solid #40372f;border-radius:14px;padding:13px;background:#201d1a;color:#f7f4ee;box-shadow:0 2px 8px #0002}
+  #sec-encomendas .fila-producao-titulo{font-weight:800;font-size:14px;line-height:1.35;overflow-wrap:anywhere;margin-bottom:12px;color:#f7f4ee}
+  #sec-encomendas .fila-producao-numeros{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  #sec-encomendas .fila-producao-numeros>div{min-width:0;background:#2b2722;border-radius:10px;padding:9px 7px;text-align:center}
+  #sec-encomendas .fila-producao-numeros small{display:block;color:#c9bda9;font-size:9px;line-height:1.25;margin-bottom:5px}
+  #sec-encomendas .fila-producao-numeros strong{font-size:17px;font-weight:900;color:#f7f4ee}
+  #sec-encomendas .fila-producao-numeros .fila-falta strong{color:#ff8290}
+  #sec-encomendas .fila-producao-vazio{padding:18px 14px;text-align:center;color:#aaa196;font-size:12px;line-height:1.5}
+  #sec-encomendas .overflow-x-auto{max-width:100%}
+}
+
+</style>
 
   <style id="tucuvori-black-red-gold-theme">
     :root {
@@ -286,6 +398,221 @@
       .mobile-bottom-nav { backdrop-filter:blur(16px); }
     }
   </style>
+
+
+<style id="encomendas-em-cards">
+  #sec-encomendas .enc-orders-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:14px;padding:14px;background:transparent}
+  #sec-encomendas .enc-order-card{min-width:0;background:#fff;border:1px solid #e7dfd3;border-radius:18px;padding:16px;box-shadow:0 5px 18px rgba(0,0,0,.045);display:flex;flex-direction:column;gap:14px;color:#171717}
+  #sec-encomendas .enc-order-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding-bottom:12px;border-bottom:1px solid #eee7dc}
+  #sec-encomendas .enc-order-head h4{font-size:15px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
+  #sec-encomendas .enc-order-head p{font-size:12px;color:#766b60;margin-top:4px;overflow-wrap:anywhere}
+  #sec-encomendas .enc-status{font-size:9px;line-height:1.2;font-weight:800;letter-spacing:.04em;padding:7px 9px;border-radius:999px;white-space:nowrap}
+  #sec-encomendas .enc-status-danger{background:#fee2e2;color:#991b1b} #sec-encomendas .enc-status-success{background:#dcfce7;color:#166534} #sec-encomendas .enc-status-info{background:#dbeafe;color:#1e40af} #sec-encomendas .enc-status-muted{background:#e7e5e4;color:#57534e} #sec-encomendas .enc-status-warning{background:#fef3c7;color:#92400e}
+  #sec-encomendas .enc-order-data{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  #sec-encomendas .enc-order-data small,#sec-encomendas .enc-order-finance small{display:block;font-size:10px;color:#877d72;margin-bottom:4px}
+  #sec-encomendas .enc-order-data strong{display:block;font-size:12px;font-weight:750;overflow-wrap:anywhere}
+  #sec-encomendas .enc-order-finance{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;background:#faf8f4;border:1px solid #eee7dc;border-radius:13px;padding:11px}
+  #sec-encomendas .enc-order-finance strong{display:block;font-size:12px;font-weight:850;overflow-wrap:anywhere}
+  #sec-encomendas .enc-order-actions{display:flex;flex-wrap:wrap;gap:7px;margin-top:auto}
+  #sec-encomendas .enc-order-actions button{border:0;border-radius:9px;padding:9px 11px;font-size:10px;font-weight:800;cursor:pointer;flex:1 1 auto;min-width:95px}
+  #sec-encomendas .enc-action-primary{background:#9f1d2d;color:#fff} #sec-encomendas .enc-action-neutral{background:#eeeae3;color:#292521} #sec-encomendas .enc-action-info{background:#dbeafe;color:#1e40af} #sec-encomendas .enc-action-danger{background:#fee2e2;color:#991b1b}
+  #sec-encomendas .enc-empty-state{grid-column:1/-1;text-align:center;padding:38px 16px;color:#8a8177;font-size:13px}
+  .dark #sec-encomendas .enc-order-card{background:#191919;border-color:#40372f;color:#f7f4ee;box-shadow:none}
+  .dark #sec-encomendas .enc-order-head{border-color:#39312b} .dark #sec-encomendas .enc-order-head p{color:#b7aa9b}
+  .dark #sec-encomendas .enc-order-finance{background:#24211d;border-color:#40372f} .dark #sec-encomendas .enc-order-data small,.dark #sec-encomendas .enc-order-finance small{color:#b7aa9b}
+  .dark #sec-encomendas .enc-action-neutral{background:#39332d;color:#f7f4ee}
+  @media(max-width:480px){#sec-encomendas .enc-orders-grid{grid-template-columns:minmax(0,1fr);gap:10px;padding:10px}#sec-encomendas .enc-order-card{padding:13px;border-radius:15px}#sec-encomendas .enc-order-finance{gap:5px;padding:9px}#sec-encomendas .enc-order-finance strong{font-size:11px}#sec-encomendas .enc-order-actions button{min-width:calc(50% - 5px);padding:10px 7px}}
+</style>
+
+
+<style id="tucuvori-mobile-first-rebuild">
+/* TUCUVORI — experiência mobile-first integral */
+:root{--tu-black:#101010;--tu-panel:#191919;--tu-panel-2:#22201d;--tu-line:#3a332c;--tu-red:#9f1d2d;--tu-gold:#c7a45f;--tu-white:#f7f4ee;--tu-muted:#b9b0a5}
+*,*::before,*::after{box-sizing:border-box}
+html,body{width:100%;max-width:100%;min-width:0;margin:0;overflow-x:hidden!important}
+body{background:var(--tu-black)!important;color:var(--tu-white)!important}
+img,svg,video,canvas{max-width:100%}
+button,a,input,select,textarea{touch-action:manipulation}
+@media(max-width:767px){
+  html{font-size:16px;-webkit-text-size-adjust:100%;}
+  body{min-height:100dvh;padding-bottom:calc(88px + env(safe-area-inset-bottom))!important;}
+  header{position:sticky!important;top:0;z-index:50;width:100%;}
+  header>div{width:100%!important;max-width:none!important;padding:0 12px!important;}
+  header>div>div{height:60px!important;gap:8px!important;min-width:0;}
+  header>div>div>div:first-child{min-width:0;gap:9px!important;flex:1 1 auto;}
+  header h1{font-size:clamp(11px,3.25vw,14px)!important;line-height:1.2!important;max-width:none!important;white-space:normal!important;overflow-wrap:anywhere;}
+  header h1 span{font-size:9px!important;padding:2px 5px!important;}
+  header #firebase-status{padding:6px!important;flex:0 0 auto;}
+  header #theme-toggle{padding:8px!important;flex:0 0 auto;}
+  .max-w-7xl.w-full.mx-auto{width:100%!important;max-width:none!important;padding:12px 10px 18px!important;gap:14px!important;}
+  main,.tab-content,.tab-content>*,#sec-encomendas,#sec-encomendas>*{width:100%;max-width:100%;min-width:0!important;}
+  .tab-content{overflow:visible!important;}
+  .tab-content .rounded-2xl,.tab-content .rounded-xl{max-width:100%;border-radius:15px!important;}
+  .tab-content .p-6,.tab-content .p-5,.tab-content .sm\:p-6{padding:13px!important;}
+  .tab-content h2{font-size:clamp(18px,5vw,22px)!important;line-height:1.3!important;overflow-wrap:anywhere;}
+  .tab-content h3{font-size:15px!important;line-height:1.35!important;overflow-wrap:anywhere;}
+  .tab-content p,.tab-content label,.tab-content small{overflow-wrap:anywhere;}
+  /* indicadores: duas colunas equilibradas, sem texto comprimido */
+  body>.flex-1>.grid.no-print{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;}
+  body>.flex-1>.grid.no-print>div{min-width:0;padding:11px!important;border-radius:14px!important;}
+  body>.flex-1>.grid.no-print>div:last-child{grid-column:span 2;}
+  body>.flex-1>.grid.no-print p{overflow-wrap:anywhere;}
+  /* todas as grades viram uma coluna, exceto KPIs e pequenos grupos de campos */
+  .tab-content .grid:not(.enc-kpis):not(.enc-order-data):not(.enc-order-finance){grid-template-columns:minmax(0,1fr)!important;}
+  #sec-encomendas .enc-kpis{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:8px!important;}
+  #sec-encomendas .enc-kpis>div{min-width:0;padding:11px!important;}
+  #sec-encomendas .enc-kpis p:nth-child(2){font-size:clamp(17px,5vw,22px)!important;overflow-wrap:anywhere;}
+  /* formulários em fluxo vertical e alvos de toque confortáveis */
+  .tab-content form{display:flex;flex-direction:column;gap:11px!important;min-width:0;}
+  .tab-content form>div,.tab-content form label,.tab-content form .grid{width:100%;min-width:0;}
+  .tab-content input,.tab-content select,.tab-content textarea{width:100%!important;max-width:100%!important;min-width:0!important;min-height:46px!important;font-size:16px!important;border-radius:11px!important;}
+  .tab-content textarea{min-height:90px!important;}
+  .tab-content button{min-height:44px!important;max-width:100%;white-space:normal;line-height:1.25;overflow-wrap:anywhere;}
+  .tab-content .flex{min-width:0;}
+  .tab-content .flex:not(.flex-col){flex-wrap:wrap!important;}
+  .tab-content .flex>*{min-width:0;max-width:100%;}
+  .tab-content .flex.flex-col.sm\:flex-row>* ,.tab-content .flex.flex-col.lg\:flex-row>*{width:100%!important;}
+  /* listas de encomendas */
+  #sec-encomendas .enc-orders-grid{grid-template-columns:minmax(0,1fr)!important;gap:10px!important;padding:10px!important;}
+  #sec-encomendas .enc-order-card{width:100%;min-width:0;padding:13px!important;border-radius:15px!important;}
+  #sec-encomendas .enc-order-head{flex-wrap:wrap;}
+  #sec-encomendas .enc-order-data{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:9px!important;}
+  #sec-encomendas .enc-order-finance{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;padding:9px!important;}
+  #sec-encomendas .enc-order-actions{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));}
+  #sec-encomendas .enc-order-actions button{width:100%;min-width:0!important;}
+  /* fila de produção: somente cards no telefone */
+  #sec-encomendas .fila-producao-desktop{display:none!important;}
+  #sec-encomendas .fila-producao-mobile{display:grid!important;grid-template-columns:minmax(0,1fr)!important;width:100%;padding:10px!important;gap:9px!important;}
+  #sec-encomendas .fila-producao-card{width:100%;min-width:0;padding:12px!important;}
+  #sec-encomendas .fila-producao-numeros{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:6px!important;}
+  #sec-encomendas .fila-producao-numeros>div{min-width:0;padding:8px 5px!important;}
+  #sec-encomendas .fila-producao-numeros small{font-size:9px!important;overflow-wrap:anywhere;}
+  #sec-encomendas .fila-producao-numeros strong{font-size:clamp(14px,4.5vw,18px)!important;}
+  /* tabelas convertidas em cartões de linha via data-label */
+  .tab-content table.mobile-card-table{display:block!important;width:100%!important;min-width:0!important;border:0!important;border-spacing:0!important;background:transparent!important;}
+  .tab-content table.mobile-card-table thead{display:none!important;}
+  .tab-content table.mobile-card-table tbody{display:grid!important;grid-template-columns:minmax(0,1fr)!important;gap:9px!important;width:100%!important;}
+  .tab-content table.mobile-card-table tbody tr{display:block!important;width:100%!important;min-width:0!important;background:#191919!important;border:1px solid var(--tu-line)!important;border-radius:13px!important;padding:9px 11px!important;box-shadow:0 3px 12px #0003;}
+  .tab-content table.mobile-card-table tbody td{display:flex!important;align-items:flex-start;justify-content:space-between;gap:12px;width:100%!important;min-width:0!important;padding:7px 0!important;border:0!important;border-bottom:1px solid #302a24!important;text-align:right!important;font-size:12px!important;overflow-wrap:anywhere;}
+  .tab-content table.mobile-card-table tbody td:last-child{border-bottom:0!important;}
+  .tab-content table.mobile-card-table tbody td:before{content:attr(data-label);display:block;flex:0 0 42%;max-width:42%;text-align:left;color:var(--tu-gold);font-size:10px;font-weight:800;line-height:1.35;text-transform:uppercase;letter-spacing:.025em;}
+  .tab-content table.mobile-card-table tbody td[colspan]:before{display:none;}
+  .tab-content .overflow-x-auto{width:100%!important;max-width:100%!important;overflow:visible!important;margin:0!important;}
+  .tab-content .overflow-x-auto table{width:100%!important;min-width:0!important;}
+  /* navegação fixa inferior, respeitando safe-area do Android/iOS */
+  .mobile-bottom-nav{position:fixed!important;left:0!important;right:0!important;bottom:0!important;z-index:80!important;width:100%!important;min-height:68px!important;padding:7px max(5px,env(safe-area-inset-left)) calc(7px + env(safe-area-inset-bottom)) max(5px,env(safe-area-inset-right))!important;background:rgba(16,16,16,.98)!important;border-top:1px solid #4a392d!important;box-shadow:0 -8px 25px #0008!important;}
+  .mobile-bottom-nav>div{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;width:100%!important;max-width:none!important;gap:2px!important;}
+  .mobile-bottom-nav button{display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:center!important;gap:3px!important;width:100%!important;min-width:0!important;min-height:52px!important;padding:4px 1px!important;border-radius:10px!important;}
+  .mobile-bottom-nav i{font-size:17px!important;}
+  .mobile-bottom-nav span{font-size:9px!important;line-height:1.1!important;white-space:normal!important;text-align:center!important;}
+  #modal-mais-mobile,#modal-pagamento-parcial{padding:0!important;align-items:flex-end!important;}
+  #modal-mais-mobile>div,#modal-pagamento-parcial>div{width:100%!important;max-width:100%!important;max-height:88dvh!important;overflow-y:auto!important;border-radius:20px 20px 0 0!important;padding:18px 14px calc(18px + env(safe-area-inset-bottom))!important;}
+  .enc-subnav{display:flex!important;flex-wrap:nowrap!important;max-width:100%!important;overflow-x:auto!important;overscroll-behavior-x:contain;gap:7px!important;padding:3px 1px 8px!important;scrollbar-width:none;}
+  .enc-subnav button{flex:0 0 auto!important;white-space:nowrap!important;}
+  #view-cliente-detalhes> .flex{flex-wrap:wrap!important;}
+  #view-cliente-detalhes> .flex>div:last-child{width:100%!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:7px!important;}
+}
+@media(max-width:380px){
+  .max-w-7xl.w-full.mx-auto{padding-inline:8px!important;}
+  body>.flex-1>.grid.no-print>div{padding:9px!important;}
+  #sec-encomendas .enc-order-finance{grid-template-columns:minmax(0,1fr)!important;}
+  #sec-encomendas .fila-producao-numeros{grid-template-columns:minmax(0,1fr)!important;}
+  .mobile-bottom-nav span{font-size:8px!important;}
+}
+@media(min-width:768px){
+  .mobile-bottom-nav,#modal-mais-mobile{display:none!important;}
+  .max-w-7xl.w-full.mx-auto{max-width:1440px;width:100%;margin-inline:auto;}
+  .tab-content .overflow-x-auto{max-width:100%;overflow-x:auto;}
+}
+
+</style>
+
+<style id="tu-cabecalho-mobile-final">
+/* Cabeçalho mobile reconstruído: marca, título e controles sem cortes */
+@media (max-width: 767px) {
+  html, body { width:100% !important; max-width:100% !important; overflow-x:clip !important; }
+  body { min-width:0 !important; }
+  header.no-print {
+    display:block !important; position:sticky !important; top:0 !important; left:0 !important;
+    width:100% !important; max-width:100% !important; z-index:100 !important;
+    margin:0 !important; padding:0 !important; overflow:visible !important;
+    background:#101010 !important; border-bottom:1px solid #493827 !important;
+    box-shadow:0 5px 18px rgba(0,0,0,.35) !important;
+  }
+  header.no-print > .max-w-7xl {
+    width:100% !important; max-width:none !important; margin:0 !important;
+    padding:10px 14px 11px !important;
+  }
+  header.no-print > .max-w-7xl > .flex {
+    display:grid !important; grid-template-columns:minmax(0,1fr) !important;
+    align-items:center !important; justify-content:stretch !important;
+    width:100% !important; height:auto !important; min-height:0 !important;
+    gap:9px !important;
+  }
+  header.no-print > .max-w-7xl > .flex > div:first-child {
+    display:flex !important; align-items:center !important; gap:10px !important;
+    width:100% !important; min-width:0 !important; margin:0 !important;
+  }
+  header.no-print > .max-w-7xl > .flex > div:first-child > div:first-child {
+    width:42px !important; height:42px !important; min-width:42px !important;
+    flex:0 0 42px !important; border-radius:12px !important;
+    background:linear-gradient(135deg,#bd2638,#7d1424) !important;
+    color:#f0d18a !important;
+  }
+  header.no-print h1 {
+    display:flex !important; flex-wrap:wrap !important; align-items:center !important;
+    gap:4px 7px !important; width:100% !important; max-width:none !important;
+    min-width:0 !important; margin:0 !important; padding:0 !important;
+    color:#fffaf0 !important; font-family:'Cinzel',Georgia,serif !important;
+    font-size:clamp(13px,4vw,16px) !important; font-weight:700 !important;
+    line-height:1.25 !important; letter-spacing:0 !important;
+    white-space:normal !important; overflow-wrap:anywhere !important;
+  }
+  header.no-print h1 span {
+    display:inline-flex !important; align-items:center !important;
+    flex:0 0 auto !important; margin:0 !important; padding:3px 7px !important;
+    color:#f2d18b !important; background:#382817 !important;
+    border:1px solid #80633a !important; border-radius:6px !important;
+    font-size:9px !important; line-height:1.2 !important;
+  }
+  header.no-print > .max-w-7xl > .flex > div:last-child {
+    display:flex !important; flex-direction:row !important; align-items:center !important;
+    justify-content:space-between !important; gap:10px !important;
+    width:100% !important; min-width:0 !important; margin:0 !important;
+  }
+  header.no-print #firebase-status {
+    display:inline-flex !important; align-items:center !important; gap:7px !important;
+    width:auto !important; max-width:calc(100% - 54px) !important;
+    min-width:0 !important; padding:6px 10px !important; margin:0 !important;
+    color:#e8d9bd !important; background:#211b16 !important;
+    border:1px solid #463626 !important; border-radius:999px !important;
+    font-size:11px !important; line-height:1.2 !important;
+  }
+  header.no-print #firebase-status-text { display:inline !important; white-space:normal !important; }
+  header.no-print #theme-toggle {
+    display:flex !important; align-items:center !important; justify-content:center !important;
+    width:40px !important; height:40px !important; min-width:40px !important;
+    min-height:40px !important; padding:0 !important; margin:0 0 0 auto !important;
+    color:#e9c77f !important; background:#241d16 !important;
+    border:1px solid #59442a !important; border-radius:11px !important;
+  }
+  header.no-print #theme-toggle i { font-size:17px !important; }
+  header.no-print p { margin:0 !important; }
+  /* Garante que o conteúdo comece abaixo do cabeçalho e não crie largura extra */
+  body > .flex-1.max-w-7xl, body > .max-w-7xl.w-full.mx-auto {
+    width:100% !important; max-width:100% !important; min-width:0 !important;
+    margin:0 !important; padding-left:12px !important; padding-right:12px !important;
+  }
+  main, .tab-content, .tab-content > *, .tab-content .grid,
+  .tab-content .flex, .tab-content form, .tab-content section { min-width:0 !important; }
+  .tab-content img, .tab-content svg, .tab-content canvas { max-width:100% !important; }
+}
+@media (max-width:360px) {
+  header.no-print > .max-w-7xl { padding-left:10px !important; padding-right:10px !important; }
+  header.no-print h1 { font-size:12px !important; }
+  header.no-print > .max-w-7xl > .flex > div:first-child > div:first-child { width:38px !important; height:38px !important; min-width:38px !important; flex-basis:38px !important; }
+}
+</style>
 
 </head>
 <body class="h-full bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 flex flex-col min-h-screen">
@@ -659,7 +986,8 @@
           <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
             <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
               <div class="p-4 border-b border-slate-200 dark:border-slate-800"><h3 class="font-bold text-sm"><i class="fa-solid fa-industry text-amber-600 mr-2"></i>Fila de produção sob demanda</h3><p class="text-xs text-slate-500 mt-1">Mostra somente o que falta produzir para atender encomendas já registradas.</p></div>
-              <div class="overflow-x-auto"><table class="w-full min-w-[460px] text-xs text-left"><thead class="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase"><tr><th class="p-3">Guia</th><th class="p-3 text-center">Encomendado</th><th class="p-3 text-center">Estoque físico</th><th class="p-3 text-center">Falta produzir</th></tr></thead><tbody id="tbody-fila-producao"></tbody></table></div>
+              <div class="fila-producao-desktop overflow-x-auto"><table class="w-full min-w-[460px] text-xs text-left"><thead class="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase"><tr><th class="p-3">Guia</th><th class="p-3 text-center">Encomendado</th><th class="p-3 text-center">Estoque físico</th><th class="p-3 text-center">Falta produzir</th></tr></thead><tbody id="tbody-fila-producao"></tbody></table></div>
+              <div id="fila-producao-mobile" class="fila-producao-mobile" aria-live="polite"></div>
             </div>
             <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
               <div class="p-4 border-b border-slate-200 dark:border-slate-800"><h3 class="font-bold text-sm"><i class="fa-solid fa-calendar-days text-emerald-600 mr-2"></i>Agenda de pagamentos</h3><p class="text-xs text-slate-500 mt-1">Vencimentos próximos e valores pendentes. Pagamentos parciais atualizam o saldo.</p></div>
@@ -706,7 +1034,7 @@
         <div class="enc-panel hidden" data-enc-panel="pedidos">
           <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
             <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"><div><h3 class="font-bold text-sm">Encomendas e pagamentos</h3><p class="text-xs text-slate-500 mt-1">Consulte vencimentos, valores recebidos e saldos de cada pedido.</p></div><div class="flex gap-2"><select id="filtro-encomenda-status" onchange="renderEncomendas()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"><option value="ativas">Em aberto</option><option value="todas">Todas</option><option value="pendente">Pagamento pendente</option><option value="atrasadas">Em atraso</option><option value="pago">Pagas</option><option value="entregue">Entregues</option><option value="cancelado">Canceladas</option></select><input id="filtro-encomenda-mes" type="month" onchange="renderEncomendas()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"></div></div>
-            <div class="overflow-x-auto"><table class="w-full min-w-[850px] text-xs text-left"><thead class="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase"><tr><th class="p-3">Pessoa / Guia</th><th class="p-3 text-center">Qtd.</th><th class="p-3">Mês</th><th class="p-3">Pagamento previsto</th><th class="p-3 text-right">Total</th><th class="p-3 text-right">Pago / Saldo</th><th class="p-3">Status</th><th class="p-3">Ações</th></tr></thead><tbody id="tbody-encomendas" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody></table></div>
+            <div id="tbody-encomendas" class="enc-orders-grid" aria-live="polite"></div>
           </div>
         </div>
       </section>
@@ -1972,7 +2300,7 @@
       const trs = linhas.length ? linhas.map(l => `<tr>${l.map(v => `<td>${v}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${colunas.length}" class="vazio">Nenhum registro encontrado para os filtros selecionados.</td></tr>`;
       janela.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>${htmlSeguroRelatorio(titulo)}</title><style>
         *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#17211c;margin:0;padding:32px;font-size:11px}header{border-bottom:3px solid #246044;padding-bottom:16px;margin-bottom:20px} .marca{font-size:10px;letter-spacing:2px;color:#246044;font-weight:bold;text-transform:uppercase}h1{font-size:22px;margin:7px 0 4px;color:#173c2b} .sub{color:#64748b;font-size:11px}.data{float:right;color:#64748b;font-size:10px}.resumo{display:grid;grid-template-columns:repeat(${Math.min(Math.max(resumo.length,1),4)},1fr);gap:9px;margin:18px 0 22px}.kpi{border:1px solid #dbe5de;border-radius:8px;padding:11px}.kpi small{display:block;color:#64748b;text-transform:uppercase;font-size:8px;font-weight:bold;letter-spacing:.6px}.kpi strong{display:block;font-size:15px;margin-top:6px;color:#173c2b}table{width:100%;border-collapse:collapse;margin-top:12px}thead{display:table-header-group}th{background:#eaf2ed;color:#244d38;text-align:left;text-transform:uppercase;font-size:8px;letter-spacing:.5px;padding:10px 8px;border-bottom:1px solid #cbd9cf}td{padding:9px 8px;border-bottom:1px solid #e5e7eb;vertical-align:top}tr{page-break-inside:avoid}.vazio{text-align:center;padding:25px;color:#64748b}.positivo{color:#b42318;font-weight:bold}.negativo{color:#137547;font-weight:bold}footer{margin-top:22px;padding-top:10px;border-top:1px solid #dbe5de;color:#64748b;font-size:9px;display:flex;justify-content:space-between}.acoes{margin:18px 0}.acoes button{background:#246044;color:#fff;border:0;border-radius:7px;padding:10px 16px;font-weight:bold;cursor:pointer}@page{size:A4;margin:14mm}@media print{body{padding:0}.acoes{display:none}.data{float:right}}
-      </style></head><body><header><span class="data">Gerado em ${new Date().toLocaleString('pt-BR')}</span><div class="marca">TUCUVORI · Controle de Guias</div><h1>${htmlSeguroRelatorio(titulo)}</h1><div class="sub">${htmlSeguroRelatorio(subtitulo)}</div></header><section class="resumo">${resumo.map(r=>`<div class="kpi"><small>${htmlSeguroRelatorio(r[0])}</small><strong>${htmlSeguroRelatorio(r[1])}</strong></div>`).join('')}</section><table><thead><tr>${th}</tr></thead><tbody>${trs}</tbody></table><footer><span>Documento gerado pelo sistema de Controle de Guias</span><span>Uso administrativo · TUCUVORI</span></footer><div class="acoes"><button onclick="window.print()">Salvar / Imprimir PDF</button></div><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
+      </style></head><body><header><span class="data">Gerado em ${new Date().toLocaleString('pt-BR')}</span><div class="marca">TUCUVORI · Controle de Guias</div><h1>${htmlSeguroRelatorio(titulo)}</h1><div class="sub">${htmlSeguroRelatorio(subtitulo)}</div></header><section class="resumo">${resumo.map(r=>`<div class="kpi"><small>${htmlSeguroRelatorio(r[0])}</small><strong>${htmlSeguroRelatorio(r[1])}</strong></div>`).join('')}</section><table><thead><tr>${th}</tr></thead><tbody>${trs}</tbody></table><footer><span>Documento gerado pelo sistema de Controle de Guias</span><span>Uso administrativo · TUCUVORI</span></footer><div class="acoes"><button onclick="window.print()">Salvar / Imprimir PDF</button></div><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script>\n</body></html>`);
       janela.document.close();
     }
     function exportarContaPDF() {
@@ -2239,7 +2567,10 @@
       tbody.innerHTML=rows.join('')||'<tr><td colspan="5" class="p-6 text-center text-slate-400">Cadastre guias no catálogo para iniciar o controle.</td></tr>';
       document.getElementById('estoque-total-geral').textContent=total; document.getElementById('estoque-reservado-geral').textContent=res; document.getElementById('estoque-livre-geral').textContent=livre;
       const fila=document.getElementById('tbody-fila-producao');
-      if(fila){const pendentes=Object.entries(produtos).map(([id,p])=>({id,p,r:obterResumoEstoque(id)})).filter(x=>x.r.aProduzir>0);fila.innerHTML=pendentes.map(x=>`<tr><td class="p-3 font-semibold">${escaparHTML(x.p.nome)}</td><td class="p-3 text-center">${x.r.reservado}</td><td class="p-3 text-center">${x.r.fisico}</td><td class="p-3 text-center font-black text-rose-600">${x.r.aProduzir}</td></tr>`).join('')||'<tr><td colspan="4" class="p-5 text-center text-slate-400">Nenhuma produção pendente. O estoque atual atende às reservas.</td></tr>';}
+      const filaMobile=document.getElementById('fila-producao-mobile');
+      const pendentes=Object.entries(produtos).map(([id,p])=>({id,p,r:obterResumoEstoque(id)})).filter(x=>x.r.aProduzir>0);
+      if(fila){fila.innerHTML=pendentes.map(x=>`<tr><td class="p-3 font-semibold">${escaparHTML(x.p.nome)}</td><td class="p-3 text-center">${x.r.reservado}</td><td class="p-3 text-center">${x.r.fisico}</td><td class="p-3 text-center font-black text-rose-600">${x.r.aProduzir}</td></tr>`).join('')||'<tr><td colspan="4" class="p-5 text-center text-slate-400">Nenhuma produção pendente. O estoque atual atende às reservas.</td></tr>';}
+      if(filaMobile){filaMobile.innerHTML=pendentes.map(x=>`<article class="fila-producao-card"><div class="fila-producao-titulo">${escaparHTML(x.p.nome)}</div><div class="fila-producao-numeros"><div><small>Encomendado</small><strong>${x.r.reservado}</strong></div><div><small>Estoque físico</small><strong>${x.r.fisico}</strong></div><div class="fila-falta"><small>Falta produzir</small><strong>${x.r.aProduzir}</strong></div></div></article>`).join('')||'<div class="fila-producao-vazio">Nenhuma produção pendente. O estoque atual atende às reservas.</div>';}
       atualizarResumoEstoqueEncomenda();
     }
     function renderAgendaPagamentos() {
@@ -2268,11 +2599,21 @@
       tbody.innerHTML=lista.map(e=>{
         const saldo=saldoEncomenda(e), financeiro=statusFinanceiroEncomenda(e), aloc=calcularAlocacaoEstoque(e.produtoId).porEncomenda[e.id]||{separado:0,faltaProduzir:0};
         const producao=['entregue','cancelado'].includes(e.status)?'—':aloc.faltaProduzir>0?`Produzir ${aloc.faltaProduzir}`:'Pronto';
-        const badge=financeiro==='EM ATRASO'?'bg-rose-100 text-rose-700':financeiro==='PAGA'?'bg-emerald-100 text-emerald-700':financeiro==='ENTREGUE'?'bg-blue-100 text-blue-700':financeiro==='CANCELADA'?'bg-slate-100 text-slate-600':'bg-amber-100 text-amber-700';
+        const badge=financeiro==='EM ATRASO'?'enc-status-danger':financeiro==='PAGA'?'enc-status-success':financeiro==='ENTREGUE'?'enc-status-info':financeiro==='CANCELADA'?'enc-status-muted':'enc-status-warning';
         const podePagar=e.status!=='cancelado'&&saldo>0;
         const podeEntregar=!['entregue','cancelado'].includes(e.status);
-        return `<tr><td class="p-3"><b>${escaparHTML(e.clienteNome)}</b><span class="block text-slate-500">${escaparHTML(e.produtoNome)}</span><span class="block text-[10px] ${aloc.faltaProduzir?'text-rose-600':'text-emerald-600'}">${producao}</span></td><td class="p-3 text-center">${Number(e.quantidade)||0}</td><td class="p-3">${escaparHTML(e.mes||'—')}</td><td class="p-3 ${financeiro==='EM ATRASO'?'text-rose-600 font-bold':''}">${dataBR(e.vencimento)}${financeiro==='EM ATRASO'?'<span class="block text-[10px]">Em atraso</span>':''}</td><td class="p-3 text-right">${formatarMoeda(e.total)}</td><td class="p-3 text-right"><b class="text-emerald-600">${formatarMoeda(e.pago||0)}</b><span class="block text-amber-600">Saldo: ${formatarMoeda(saldo)}</span></td><td class="p-3"><span class="px-2 py-1 rounded-lg text-[10px] font-bold ${badge}">${financeiro}</span></td><td class="p-3"><div class="flex flex-wrap gap-1">${podePagar?`<button onclick="registrarPagamentoEncomenda('${e.id}')" class="px-2 py-1 rounded bg-emerald-600 text-white">Receber</button>`:''}<button onclick="verHistoricoPagamentos('${e.id}')" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">Histórico</button>${podeEntregar?`<button onclick="concluirEncomenda('${e.id}')" class="px-2 py-1 rounded bg-blue-600 text-white">Entregar</button><button onclick="cancelarEncomenda('${e.id}')" class="px-2 py-1 rounded bg-rose-100 text-rose-700">Cancelar</button>`:''}</div></td></tr>`;
-      }).join('')||'<tr><td colspan="8" class="p-8 text-center text-slate-400">Nenhuma encomenda encontrada.</td></tr>';
+        return `<article class="enc-order-card">
+          <div class="enc-order-head"><div class="min-w-0"><h4>${escaparHTML(e.clienteNome||'Pessoa')}</h4><p>${escaparHTML(e.produtoNome||'Guia')}</p></div><span class="enc-status ${badge}">${financeiro}</span></div>
+          <div class="enc-order-data">
+            <div><small>Quantidade</small><strong>${Number(e.quantidade)||0} un.</strong></div>
+            <div><small>Mês</small><strong>${escaparHTML(e.mes||'—')}</strong></div>
+            <div><small>Pagamento previsto</small><strong class="${financeiro==='EM ATRASO'?'text-rose-600':''}">${dataBR(e.vencimento)||'—'}</strong></div>
+            <div><small>Produção / estoque</small><strong class="${aloc.faltaProduzir?'text-rose-600':'text-emerald-600'}">${producao}</strong></div>
+          </div>
+          <div class="enc-order-finance"><div><small>Valor total</small><strong>${formatarMoeda(e.total)}</strong></div><div><small>Já recebido</small><strong class="text-emerald-600">${formatarMoeda(e.pago||0)}</strong></div><div><small>Saldo restante</small><strong class="${saldo>0?'text-amber-600':'text-emerald-600'}">${formatarMoeda(saldo)}</strong></div></div>
+          <div class="enc-order-actions">${podePagar?`<button onclick="registrarPagamentoEncomenda('${e.id}')" class="enc-action-primary">Receber pagamento</button>`:''}<button onclick="verHistoricoPagamentos('${e.id}')" class="enc-action-neutral">Histórico</button>${podeEntregar?`<button onclick="concluirEncomenda('${e.id}')" class="enc-action-info">Marcar entregue</button><button onclick="cancelarEncomenda('${e.id}')" class="enc-action-danger">Cancelar</button>`:''}</div>
+        </article>`;
+      }).join('')||'<div class="enc-empty-state">Nenhuma encomenda encontrada para esses filtros.</div>';
     }
     async function registrarPagamentoEncomenda(id) {
       const e=window.appState.encomendas[id]; if(!e||e.status==='cancelado')return;
@@ -2498,5 +2839,33 @@
 
     atualizarAjudaMassa();
   </script>
+<script id="tucuvori-mobile-table-cards">
+(function(){
+  function enhanceTables(){
+    document.querySelectorAll('.tab-content table').forEach(function(table){
+      if(table.closest('.fila-producao-desktop') || table.classList.contains('mobile-card-table')) return;
+      var heads=Array.from(table.querySelectorAll('thead tr:last-child th')).map(function(th){return (th.innerText||th.textContent||'').trim();});
+      if(!heads.length) return;
+      table.classList.add('mobile-card-table');
+      table.querySelectorAll('tbody tr').forEach(function(row){
+        Array.from(row.children).forEach(function(cell,index){
+          if(cell.tagName==='TD' && !cell.hasAttribute('colspan')) cell.setAttribute('data-label',heads[index]||('Informação '+(index+1)));
+        });
+      });
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',enhanceTables); else enhanceTables();
+  var root=document.querySelector('main')||document.body;
+  if(window.MutationObserver && root){
+    var observer=new MutationObserver(function(records){
+      if(records.some(function(r){return r.addedNodes&&r.addedNodes.length;})) enhanceTables();
+    });
+    observer.observe(root,{childList:true,subtree:true});
+  }
+  document.addEventListener('click',function(e){
+    if(e.target.closest('.tab-btn,[onclick*=\"switchTab\"]')) setTimeout(enhanceTables,80);
+  });
+})();
+</script>
 </body>
 </html>
