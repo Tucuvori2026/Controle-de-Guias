@@ -19,10 +19,10 @@
               950: '#0D221A',
             },
             executive: {
-              primary: '#2D6A4F',
-              secondary: '#1B4332',
-              accent: '#52B788',
-              gold: '#D4AF37',
+              primary: '#24513D',
+              secondary: '#173629',
+              accent: '#8AA995',
+              gold: '#B89A62',
             }
           }
         }
@@ -35,9 +35,18 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
   
   <style>
     body { font-family: 'Inter', sans-serif; }
+    button, input, select, textarea { transition: border-color .18s ease, box-shadow .18s ease, background-color .18s ease, transform .18s ease; }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #52B788; outline-offset: 2px; }
+    .tab-content > div, .tab-content > section { min-width: 0; }
+    .tab-btn:hover { background: rgba(45,106,79,.06); }
+    table tbody tr:nth-child(even) { background-color: rgba(148,163,184,.035); }
+    @media (max-width: 640px) { input, select, textarea { max-width: 100%; } .tab-content { min-width: 0; } }
+
     ::-webkit-scrollbar { width: 6px; height: 6px; }
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #94a3b8; border-radius: 9999px; }
@@ -53,7 +62,231 @@
       .print-only { display: block !important; }
       body { background: white !important; color: black !important; }
     }
+
+    :root { color-scheme: light; --brand:#24513d; --brand-dark:#173629; --gold:#b89a62; }
+    html { scroll-behavior:smooth; -webkit-text-size-adjust:100%; }
+    body { background:#f3f6f2; color:#24352c; }
+    .dark body { background:#101713; }
+    button { min-height:40px; touch-action:manipulation; }
+    input,select,textarea { min-height:44px; font-size:16px !important; }
+    input[type="checkbox"],input[type="radio"] { min-height:auto; }
+    .tab-content { animation:tabIn .18s ease-out; }
+    @keyframes tabIn { from {opacity:.65; transform:translateY(4px)} to {opacity:1;transform:none} }
+    .tab-btn { white-space:nowrap; }
+    /* Navegação desktop: quebra em linhas quando necessário, sem rolagem horizontal */
+    .desktop-navigation { display:flex; flex-wrap:wrap; align-items:stretch; gap:4px; overflow:visible !important; padding:6px 0 0; }
+    .desktop-navigation .tab-btn { flex:1 1 auto; justify-content:center; min-width:max-content; padding:11px 12px !important; font-size:13px !important; }
+    @media (min-width:768px) and (max-width:1100px) {
+      .desktop-navigation .tab-btn { flex:1 1 22%; padding:10px 8px !important; font-size:12px !important; gap:7px !important; }
+    }
+    @media (min-width:1101px) {
+      .desktop-navigation .tab-btn { flex:1 1 auto; }
+    }
+    .mobile-bottom-nav { padding-bottom:calc(8px + env(safe-area-inset-bottom)); }
+    .mobile-bottom-nav button { min-height:48px; }
+    #modal-mais-mobile > div { padding-bottom:calc(1.5rem + env(safe-area-inset-bottom)); max-height:82dvh; overflow-y:auto; }
+    .bg-white.dark\:bg-slate-900 { box-shadow:0 2px 12px rgba(24,39,30,.035); }
+    .dark .bg-white { background-color:#18231c; }
+    .dark .bg-slate-50 { background-color:#121b15; }
+    .dark .border-slate-200 { border-color:#2b3a30; }
+    .dark .border-slate-800 { border-color:#2b3a30; }
+    .dark input,.dark select,.dark textarea { background-color:#111a14; }
+    button:active { transform:scale(.985); }
+    .overflow-x-auto { -webkit-overflow-scrolling:touch; scrollbar-width:thin; }
+    table { font-variant-numeric:tabular-nums; }
+    th { white-space:nowrap; }
+    td { vertical-align:middle; }
+    @media (max-width:767px) {
+      body { padding-bottom:calc(76px + env(safe-area-inset-bottom)) !important; }
+      header { position:sticky; top:0; }
+      header .max-w-7xl { padding-left:14px; padding-right:14px; }
+      header h1 { font-size:14px; line-height:1.25; max-width: min(66vw,310px); }
+      header .w-10 { width:38px; height:38px; flex-shrink:0; }
+      header #firebase-status { padding:7px 9px; }
+      .max-w-7xl.w-full.mx-auto { padding-left:12px; padding-right:12px; padding-top:14px; gap:16px; }
+      main { padding-bottom:12px; }
+      .tab-content { width:100%; min-width:0; }
+      .tab-content > div,.tab-content > section { min-width:0; }
+      .tab-content .rounded-2xl { border-radius:16px; }
+      .tab-content .p-5,.tab-content .sm\:p-6 { padding:14px; }
+      .tab-content .space-y-6 > :not([hidden]) ~ :not([hidden]) { margin-top:14px; }
+      .tab-content h2 { line-height:1.35; }
+      .tab-content input,.tab-content select,.tab-content textarea { width:100%; max-width:100%; }
+      .tab-content button { min-height:44px; }
+      .tab-content .flex.flex-col.sm\:flex-row > button { width:100%; }
+      .tab-content .grid { min-width:0; }
+      #grid-clientes,#grid-produtos,#grid-categorias { grid-template-columns:minmax(0,1fr) !important; }
+      #grid-clientes > *,#grid-produtos > *,#grid-categorias > * { min-width:0; }
+      .overflow-x-auto { max-width:calc(100vw - 24px); border-radius:12px; }
+      .overflow-x-auto table { min-width:620px; }
+      #tbody-encomendas { font-size:12px; }
+      #sec-encomendas .grid.grid-cols-1.sm\:grid-cols-3 { grid-template-columns:repeat(3,minmax(0,1fr)); gap:7px; }
+      #sec-encomendas .grid.grid-cols-1.sm\:grid-cols-3 > div { padding:10px 8px; }
+      #sec-encomendas .grid.grid-cols-1.sm\:grid-cols-3 p:nth-child(2) { font-size:20px; }
+      #sec-encomendas .grid.grid-cols-1.xl\:grid-cols-2 { gap:12px; }
+      #sec-encomendas form { gap:10px; }
+      #sec-encomendas .flex.flex-col.sm\:flex-row.sm\:items-center.sm\:justify-between { align-items:stretch; }
+      #sec-encomendas .flex.gap-2 { flex-wrap:wrap; }
+      #sec-encomendas #filtro-encomenda-status,#sec-encomendas #filtro-encomenda-mes { flex:1 1 140px; min-width:0; }
+      #sec-clientes .flex.flex-col.lg\:flex-row { gap:10px; }
+      #sec-clientes .flex.flex-col.sm\:flex-row.items-stretch { width:100%; }
+      #sec-clientes .flex.gap-2 > button { flex:1; }
+      #view-cliente-detalhes > .flex { padding:12px; }
+      #view-cliente-detalhes > .flex > div:last-child { width:100%; display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:6px; }
+      #view-cliente-detalhes > .flex > div:last-child button { justify-content:center; padding:8px 5px; font-size:11px; }
+      #stat-a-receber,#stat-recebido,#stat-total-compras,#stat-total-clientes,#stat-total-produtos { font-size:18px; }
+      .mobile-bottom-nav { min-height:66px; }
+      #modal-mais-mobile { align-items:flex-end; }
+      #modal-mais-mobile > div { width:100%; border-radius:24px 24px 0 0; }
+      #modal-pagamento-parcial { align-items:flex-end; padding:0; }
+      #modal-pagamento-parcial > div { border-radius:22px 22px 0 0; padding:20px 16px calc(20px + env(safe-area-inset-bottom)); max-width:none; }
+      .tab-content .grid.grid-cols-2 { gap:8px; }
+      .tab-content .text-\\[10px\\] { line-height:1.45; }
+    }
+    @media (max-width:380px) {
+      header h1 { font-size:12px; }
+      #sec-encomendas .grid.grid-cols-1.sm\:grid-cols-3 { grid-template-columns:1fr; }
+      .mobile-bottom-nav span { font-size:9px; }
+      .mobile-bottom-nav i { font-size:15px; }
+    }
+    @media (min-width:768px) {
+      .mobile-bottom-nav,#modal-mais-mobile { display:none !important; }
+      .max-w-7xl.w-full.mx-auto { padding-top:24px; }
+    }
+    @media (prefers-reduced-motion:reduce) {
+      *,*::before,*::after { scroll-behavior:auto !important; animation-duration:.01ms !important; transition-duration:.01ms !important; }
+    }
+
+
+    /* Redesign visual: clean, calm and consistent */
+    :root { --surface:#ffffff; --surface-soft:#f7faf7; --line:#e1e9e2; --ink:#24352c; --muted:#718078; }
+    body { letter-spacing:-.012em; }
+    header { background:rgba(255,255,255,.94) !important; border-color:var(--line) !important; box-shadow:0 5px 24px rgba(25,55,39,.055) !important; backdrop-filter:blur(14px); }
+    header .w-10 { border-radius:14px !important; box-shadow:0 7px 16px rgba(23,54,41,.18) !important; }
+    .max-w-7xl.w-full.mx-auto { gap:24px !important; }
+    .tab-btn { border-radius:12px 12px 0 0 !important; padding:14px 15px !important; }
+    .tab-btn.active-tab { background:#edf4ef !important; color:#24513d !important; border-bottom-color:#24513d !important; }
+    .tab-content { gap:22px !important; }
+    .tab-content .bg-white.rounded-2xl, .tab-content .bg-white.dark\:bg-slate-900.rounded-2xl,
+    #sec-encomendas > .bg-white, #sec-encomendas .bg-white.dark\:bg-slate-900 {
+      border-color:#e1e9e2 !important; border-radius:18px !important;
+      box-shadow:0 5px 22px rgba(31,63,44,.045) !important;
+    }
+    .tab-content h2 { letter-spacing:-.035em; font-size:clamp(20px,2vw,25px) !important; }
+    .tab-content h3 { letter-spacing:-.02em; }
+    .tab-content label { color:#52645a; font-weight:650; }
+    .tab-content input,.tab-content select,.tab-content textarea { background:#f8faf8 !important; border-color:#dce6de !important; border-radius:11px !important; color:#26382e !important; }
+    .tab-content input:focus,.tab-content select:focus,.tab-content textarea:focus { border-color:#6f967e !important; box-shadow:0 0 0 3px rgba(67,112,82,.12) !important; }
+    .tab-content button, .mobile-bottom-nav button { border-radius:12px; font-weight:650; }
+    .tab-content button.bg-executive-primary, #form-encomenda button { background:#24513d !important; box-shadow:0 5px 12px rgba(36,81,61,.14); }
+    .tab-content button.bg-blue-600 { background:#527c67 !important; }
+    .tab-content table thead { background:#f1f6f2 !important; color:#607168 !important; }
+    .tab-content th { font-size:10px; letter-spacing:.06em; }
+    .tab-content td { padding-top:12px; padding-bottom:12px; }
+    .mobile-bottom-nav { border-color:#dfe8e1 !important; box-shadow:0 -8px 28px rgba(29,58,41,.09) !important; }
+    .dark body { background:#101a14 !important; }
+    .dark header { background:rgba(20,32,24,.94) !important; border-color:#2b4032 !important; }
+    .dark .tab-btn.active-tab { background:#20382a !important; color:#b7d1bf !important; border-bottom-color:#8aaa93 !important; }
+    .dark .tab-content .bg-white.rounded-2xl,.dark #sec-encomendas .bg-white { background:#18251c !important; border-color:#2c4032 !important; }
+    .dark .tab-content input,.dark .tab-content select,.dark .tab-content textarea { background:#111c15 !important; border-color:#344a39 !important; color:#e4eee6 !important; }
+    .dark .tab-content table thead { background:#203127 !important; color:#b3c7b8 !important; }
+    .dark .mobile-bottom-nav { background:rgba(20,32,24,.96) !important; border-color:#2b4032 !important; }
+    .enc-hero { background:linear-gradient(120deg,#173629 0%,#24513d 58%,#527c67 100%); color:#fff; border-radius:22px; padding:22px 24px; position:relative; overflow:hidden; }
+    .enc-hero:after { content:""; position:absolute; width:230px; height:230px; border:1px solid rgba(255,255,255,.12); border-radius:50%; right:-55px; top:-105px; box-shadow:0 0 0 24px rgba(255,255,255,.035),0 0 0 50px rgba(255,255,255,.025); }
+    .enc-subnav { display:flex; gap:8px; overflow-x:auto; padding:5px 1px 10px; scrollbar-width:none; }
+    .enc-subnav button { flex:0 0 auto; border:1px solid #dce7de; background:#fff; color:#607168; padding:10px 14px; font-size:12px; border-radius:12px; }
+    .enc-subnav button.active { background:#24513d; color:white; border-color:#24513d; box-shadow:0 5px 14px rgba(36,81,61,.16); }
+    .enc-panel { min-width:0; }
+    .enc-kpi { position:relative; overflow:hidden; }
+    .enc-kpi:before { content:""; position:absolute; inset:0 auto 0 0; width:4px; background:#8aa995; }
+    @media(max-width:767px) {
+      .enc-hero { padding:19px 17px; border-radius:18px; }
+      .enc-subnav { margin:0 -2px; }
+      .enc-subnav button { padding:10px 12px; }
+      #sec-encomendas .enc-kpis { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+      #sec-encomendas .enc-kpis > div { min-width:0; padding:13px !important; }
+      #sec-encomendas .enc-kpis p:nth-child(2) { font-size:21px; }
+      #sec-encomendas .enc-panel > .grid { grid-template-columns:minmax(0,1fr) !important; }
+    }
+
   </style>
+
+  <style id="tucuvori-black-red-gold-theme">
+    :root {
+      color-scheme: dark;
+      --surface:#171717; --surface-soft:#202020; --line:#37302a;
+      --ink:#f7f4ee; --muted:#b9b0a5;
+      --brand:#9f1d2d; --brand-dark:#741522; --gold:#c7a45f;
+      --black:#101010; --white:#f7f4ee;
+    }
+    html,body { background:#101010 !important; color:#f7f4ee !important; }
+    body { font-family:'Manrope',sans-serif !important; letter-spacing:-.012em; }
+    h1,h2,h3,h4,.font-serif { font-family:'Cinzel','Manrope',serif !important; }
+    header { background:rgba(16,16,16,.96) !important; border-color:#3b3028 !important; box-shadow:0 8px 28px rgba(0,0,0,.38) !important; }
+    header h1 { color:#fff !important; }
+    header .w-10 { background:linear-gradient(145deg,#bd293a,#741522) !important; box-shadow:0 6px 18px rgba(159,29,45,.28) !important; }
+    .tab-btn { color:#c8c0b5 !important; }
+    .tab-btn:hover { background:rgba(199,164,95,.09) !important; }
+    .tab-btn.active-tab { background:rgba(159,29,45,.18) !important; color:#e0bd79 !important; border-bottom-color:#c7a45f !important; }
+    .tab-content .bg-white, .tab-content .bg-white.dark\:bg-slate-900,
+    #sec-encomendas .bg-white, .bg-white.dark\:bg-slate-900,
+    .tab-content [class*="bg-slate-50"], .tab-content [class*="bg-slate-100"] {
+      background-color:#191919 !important; color:#f5f1e9 !important; border-color:#39312b !important;
+    }
+    .tab-content .rounded-2xl, #sec-encomendas .rounded-2xl {
+      border-color:#39312b !important; box-shadow:0 7px 24px rgba(0,0,0,.24) !important;
+    }
+    .tab-content input,.tab-content select,.tab-content textarea,
+    input,select,textarea {
+      background:#242321 !important; color:#fff !important; border-color:#514638 !important;
+    }
+    .tab-content input::placeholder,input::placeholder,textarea::placeholder { color:#9d9488 !important; }
+    .tab-content input:focus,.tab-content select:focus,.tab-content textarea:focus,
+    input:focus,select:focus,textarea:focus {
+      border-color:#c7a45f !important; box-shadow:0 0 0 3px rgba(199,164,95,.16) !important;
+    }
+    .tab-content label { color:#d4c9b9 !important; }
+    .tab-content table thead, .tab-content thead, #sec-encomendas thead {
+      background:#29231f !important; color:#dfc58f !important;
+    }
+    .tab-content table tbody tr:nth-child(even) { background:rgba(255,255,255,.025) !important; }
+    .tab-content td,.tab-content th { border-color:#39312b !important; }
+    .tab-content button.bg-executive-primary,
+    .tab-content button.bg-emerald-600,
+    #form-encomenda button, .bg-executive-primary {
+      background:#941d2b !important; color:#fff !important; border-color:#b32a3b !important;
+    }
+    .tab-content button.bg-executive-primary:hover,
+    .tab-content button.bg-emerald-600:hover,
+    #form-encomenda button:hover { background:#b12638 !important; }
+    .tab-content button.bg-rose-600 { background:#9f1d2d !important; }
+    .tab-content button.bg-blue-600 { background:#8f1d2b !important; }
+    .text-executive-primary,.text-emerald-600,.text-emerald-500 { color:#d5b36e !important; }
+    .text-amber-600,.text-amber-500,.text-amber-400 { color:#d9b66d !important; }
+    .text-rose-600,.text-rose-500,.text-rose-400 { color:#e36b76 !important; }
+    .bg-emerald-100,.bg-emerald-50 { background:rgba(199,164,95,.14) !important; }
+    .text-executive-secondary,.text-emerald-800,.text-emerald-700 { color:#e2c98f !important; }
+    .border-emerald-200,.border-emerald-300 { border-color:#806b45 !important; }
+    .enc-hero { background:linear-gradient(120deg,#101010 0%,#4b111a 58%,#941d2b 100%) !important; border:1px solid rgba(199,164,95,.35); }
+    .enc-hero .text-emerald-100,.enc-hero .text-emerald-50 { color:#ead9b6 !important; }
+    .enc-subnav button { background:#1b1b1b !important; color:#d8d0c4 !important; border-color:#514638 !important; }
+    .enc-subnav button.active { background:#941d2b !important; color:#fff !important; border-color:#c7a45f !important; }
+    .enc-kpi:before { background:#c7a45f !important; }
+    .mobile-bottom-nav { background:rgba(16,16,16,.98) !important; border-color:#4a392d !important; box-shadow:0 -8px 28px rgba(0,0,0,.45) !important; }
+    .mobile-bottom-nav button { color:#c9c0b3 !important; }
+    .mobile-bottom-nav button.active,.mobile-bottom-nav .active { color:#dfbd78 !important; }
+    .dark body { background:#101010 !important; }
+    .dark header { background:rgba(16,16,16,.96) !important; border-color:#3b3028 !important; }
+    .dark .tab-content .bg-white,.dark #sec-encomendas .bg-white { background:#191919 !important; border-color:#39312b !important; }
+    .dark .tab-content input,.dark .tab-content select,.dark .tab-content textarea { background:#242321 !important; border-color:#514638 !important; color:#fff !important; }
+    ::-webkit-scrollbar-thumb { background:#806b45 !important; }
+    button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible { outline:2px solid #c7a45f !important; }
+    @media(max-width:767px) {
+      header h1 { font-family:'Cinzel','Manrope',serif !important; letter-spacing:-.025em; }
+      .mobile-bottom-nav { backdrop-filter:blur(16px); }
+    }
+  </style>
+
 </head>
 <body class="h-full bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 transition-colors duration-200 flex flex-col min-h-screen">
 
@@ -136,12 +369,15 @@
     </div>
 
     <!-- Desktop Navigation Tabs -->
-    <div class="hidden md:flex items-center space-x-1 border-b border-slate-200 dark:border-slate-800 no-print overflow-x-auto">
+    <div class="hidden md:flex desktop-navigation border-b border-slate-200 dark:border-slate-800 no-print">
       <button onclick="switchTab('clientes')" id="tab-btn-clientes" class="tab-btn active-tab px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-executive-primary text-executive-primary dark:text-emerald-400">
         <i class="fa-solid fa-user-group"></i> Clientes
       </button>
       <button onclick="switchTab('catalogo')" id="tab-btn-catalogo" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
         <i class="fa-solid fa-gem"></i> Catálogo de Fios
+      </button>
+      <button onclick="switchTab('encomendas')" id="tab-btn-encomendas" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
+        <i class="fa-solid fa-clipboard-list"></i> Encomendas & Estoque
       </button>
       <button onclick="switchTab('lancar-fios')" id="tab-btn-lancar-fios" class="tab-btn px-4 py-3 font-semibold text-xs sm:text-sm rounded-t-xl transition-all flex items-center gap-2 border-b-2 border-transparent text-slate-500 hover:text-slate-800 dark:text-slate-400 dark:hover:text-slate-200">
         <i class="fa-solid fa-link"></i> Lançar Fios
@@ -396,6 +632,85 @@
         </div>
       </section>
 
+      <!-- ABA: ENCOMENDAS E ESTOQUE -->
+      <section id="sec-encomendas" class="tab-content hidden space-y-6">
+        <div class="enc-hero flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div class="relative z-10"><div class="text-[10px] uppercase tracking-[.18em] font-bold text-emerald-100/80 mb-2">Gestão de pedidos</div><h2 class="text-2xl font-extrabold text-white">Encomendas & Estoque</h2><p class="text-sm text-emerald-50/85 mt-1 max-w-xl">Acompanhe reservas, produção e recebimentos em um só lugar.</p></div>
+          <button onclick="exportarRelatorioEncomendas()" class="relative z-10 px-4 py-3 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-semibold backdrop-blur"><i class="fa-solid fa-file-arrow-down mr-2"></i>Exportar relatório</button>
+        </div>
+        <div class="enc-subnav no-print" role="tablist" aria-label="Seções de encomendas">
+          <button type="button" class="active" data-enc-view="visao" onclick="mostrarPainelEncomendas('visao',this)"><i class="fa-solid fa-chart-pie mr-2"></i>Visão geral</button>
+          <button type="button" data-enc-view="nova" onclick="mostrarPainelEncomendas('nova',this)"><i class="fa-solid fa-circle-plus mr-2"></i>Nova encomenda</button>
+          <button type="button" data-enc-view="estoque" onclick="mostrarPainelEncomendas('estoque',this)"><i class="fa-solid fa-boxes-stacked mr-2"></i>Produção & estoque</button>
+          <button type="button" data-enc-view="pedidos" onclick="mostrarPainelEncomendas('pedidos',this)"><i class="fa-solid fa-list-check mr-2"></i>Pedidos & pagamentos</button>
+        </div>
+
+        <div class="enc-panel space-y-5" data-enc-panel="visao">
+          <div class="enc-kpis grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-[10px] uppercase font-bold text-slate-500">Guias em estoque</p><p id="estoque-total-geral" class="text-2xl font-black mt-1">0</p><p class="text-[10px] text-slate-400">Unidades físicas prontas</p></div>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-[10px] uppercase font-bold text-amber-600">Reservadas</p><p id="estoque-reservado-geral" class="text-2xl font-black mt-1 text-amber-600">0</p><p class="text-[10px] text-slate-400">Comprometidas com encomendas ativas</p></div>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-[10px] uppercase font-bold text-emerald-600">Livres para encomenda</p><p id="estoque-livre-geral" class="text-2xl font-black mt-1 text-emerald-600">0</p><p class="text-[10px] text-slate-400">Disponíveis sem dupla reserva</p></div>
+          </div>
+          <div class="enc-kpis grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-[10px] uppercase font-bold text-rose-600">Pagamentos em atraso</p><p id="enc-total-atrasado" class="text-xl font-black mt-1 text-rose-600">R$ 0,00</p><p id="enc-qtd-atrasadas" class="text-[10px] text-slate-400">0 encomendas</p></div>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-[10px] uppercase font-bold text-amber-600">A receber no mês</p><p id="enc-total-mes" class="text-xl font-black mt-1 text-amber-600">R$ 0,00</p><p class="text-[10px] text-slate-400">Saldo com vencimento neste mês</p></div>
+            <div class="bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800"><p class="text-[10px] uppercase font-bold text-emerald-600">Recebido nas encomendas</p><p id="enc-total-recebido" class="text-xl font-black mt-1 text-emerald-600">R$ 0,00</p><p class="text-[10px] text-slate-400">Soma dos pagamentos registrados</p></div>
+          </div>
+          <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="p-4 border-b border-slate-200 dark:border-slate-800"><h3 class="font-bold text-sm"><i class="fa-solid fa-industry text-amber-600 mr-2"></i>Fila de produção sob demanda</h3><p class="text-xs text-slate-500 mt-1">Mostra somente o que falta produzir para atender encomendas já registradas.</p></div>
+              <div class="overflow-x-auto"><table class="w-full min-w-[460px] text-xs text-left"><thead class="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase"><tr><th class="p-3">Guia</th><th class="p-3 text-center">Encomendado</th><th class="p-3 text-center">Estoque físico</th><th class="p-3 text-center">Falta produzir</th></tr></thead><tbody id="tbody-fila-producao"></tbody></table></div>
+            </div>
+            <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+              <div class="p-4 border-b border-slate-200 dark:border-slate-800"><h3 class="font-bold text-sm"><i class="fa-solid fa-calendar-days text-emerald-600 mr-2"></i>Agenda de pagamentos</h3><p class="text-xs text-slate-500 mt-1">Vencimentos próximos e valores pendentes. Pagamentos parciais atualizam o saldo.</p></div>
+              <div id="lista-agenda-pagamentos" class="divide-y divide-slate-100 dark:divide-slate-800"><p class="p-4 text-xs text-slate-400">Nenhum vencimento pendente.</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="enc-panel hidden" data-enc-panel="nova">
+          <div class="max-w-3xl mx-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 space-y-4">
+            <div><h3 class="font-bold text-base"><i class="fa-solid fa-cart-plus text-emerald-600 mr-2"></i>Registrar nova encomenda</h3><p class="text-xs text-slate-500 mt-1">Preencha os dados. O sistema calcula a reserva e indica se será necessário produzir.</p></div>
+            <form id="form-encomenda" onsubmit="salvarEncomenda(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="sm:col-span-2"><label class="block text-xs font-semibold mb-1">Pessoa *</label><select id="enc-cliente" required class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"><option value="">Selecione</option></select></div>
+              <div class="sm:col-span-2"><label class="block text-xs font-semibold mb-1">Guia / Produto *</label><select id="enc-produto" required onchange="atualizarResumoEstoqueEncomenda()" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"><option value="">Selecione</option></select></div>
+              <div><label class="block text-xs font-semibold mb-1">Quantidade *</label><input id="enc-qtd" type="number" min="1" step="1" value="1" required oninput="atualizarResumoEstoqueEncomenda()" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"></div>
+              <div><label class="block text-xs font-semibold mb-1">Valor unitário (R$)</label><input id="enc-valor" type="number" min="0" step="0.01" required class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs" placeholder="0,00"></div>
+              <div><label class="block text-xs font-semibold mb-1">Mês da encomenda *</label><input id="enc-mes" type="month" required class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"></div>
+              <div><label class="block text-xs font-semibold mb-1">Data prevista de pagamento *</label><input id="enc-vencimento" type="date" required class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"></div>
+              <div class="sm:col-span-2"><p id="enc-resumo-estoque" class="rounded-xl bg-slate-50 dark:bg-slate-950 p-3 text-xs text-slate-600 dark:text-slate-300">Selecione uma guia para consultar o estoque.</p></div>
+              <div class="sm:col-span-2"><label class="block text-xs font-semibold mb-1">Observações</label><input id="enc-obs" type="text" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs" placeholder="Detalhes adicionais"></div>
+              <button class="sm:col-span-2 w-full py-3 rounded-xl bg-executive-primary text-white text-xs font-bold"><i class="fa-solid fa-check mr-2"></i>Salvar encomenda e reservar estoque</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="enc-panel hidden space-y-5" data-enc-panel="estoque">
+          <div class="max-w-3xl mx-auto bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 space-y-3">
+            <div><h3 class="font-bold text-base"><i class="fa-solid fa-industry text-emerald-600 mr-2"></i>Registrar produção</h3><p class="text-xs text-slate-500 mt-1">Informe as unidades concluídas para atualizar o estoque físico e atender às reservas.</p></div>
+            <form id="form-producao" onsubmit="registrarProducao(event)" class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div class="sm:col-span-2"><label class="block text-xs font-semibold mb-1">Guia / Produto *</label><select id="prod-produto" required class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"><option value="">Selecione</option></select></div>
+              <div><label class="block text-xs font-semibold mb-1">Quantidade produzida *</label><input id="prod-qtd" type="number" min="1" step="1" required class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"></div>
+              <div><label class="block text-xs font-semibold mb-1">Data da produção</label><input id="prod-data" type="date" required class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"></div>
+              <div class="sm:col-span-2"><label class="block text-xs font-semibold mb-1">Observação</label><input id="prod-obs" class="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs" placeholder="Lote, responsável etc."></div>
+              <button class="sm:col-span-2 w-full py-3 rounded-xl bg-executive-primary text-white text-xs font-bold"><i class="fa-solid fa-boxes-stacked mr-2"></i>Adicionar ao estoque</button>
+            </form>
+            <div class="rounded-xl bg-emerald-50 dark:bg-emerald-950/30 p-3 text-xs text-emerald-800 dark:text-emerald-200">A produção é registrada como entrada. As encomendas ativas permanecem reservadas até serem entregues ou canceladas.</div>
+          </div>
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800"><h3 class="font-bold text-sm">Posição de estoque por guia</h3><p class="text-xs text-slate-500 mt-1">Físico = unidades prontas; reservado = comprometido; livre = disponível para novas encomendas.</p></div>
+            <div class="overflow-x-auto"><table class="w-full min-w-[620px] text-xs text-left"><thead class="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase"><tr><th class="p-3">Guia</th><th class="p-3 text-center">Estoque físico</th><th class="p-3 text-center">Reservado</th><th class="p-3 text-center">Livre</th><th class="p-3 text-center">A produzir</th></tr></thead><tbody id="tbody-estoque" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody></table></div>
+          </div>
+        </div>
+
+        <div class="enc-panel hidden" data-enc-panel="pedidos">
+          <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
+            <div class="p-4 border-b border-slate-200 dark:border-slate-800 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2"><div><h3 class="font-bold text-sm">Encomendas e pagamentos</h3><p class="text-xs text-slate-500 mt-1">Consulte vencimentos, valores recebidos e saldos de cada pedido.</p></div><div class="flex gap-2"><select id="filtro-encomenda-status" onchange="renderEncomendas()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"><option value="ativas">Em aberto</option><option value="todas">Todas</option><option value="pendente">Pagamento pendente</option><option value="atrasadas">Em atraso</option><option value="pago">Pagas</option><option value="entregue">Entregues</option><option value="cancelado">Canceladas</option></select><input id="filtro-encomenda-mes" type="month" onchange="renderEncomendas()" class="p-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-950 text-xs"></div></div>
+            <div class="overflow-x-auto"><table class="w-full min-w-[850px] text-xs text-left"><thead class="bg-slate-50 dark:bg-slate-950 text-slate-500 uppercase"><tr><th class="p-3">Pessoa / Guia</th><th class="p-3 text-center">Qtd.</th><th class="p-3">Mês</th><th class="p-3">Pagamento previsto</th><th class="p-3 text-right">Total</th><th class="p-3 text-right">Pago / Saldo</th><th class="p-3">Status</th><th class="p-3">Ações</th></tr></thead><tbody id="tbody-encomendas" class="divide-y divide-slate-100 dark:divide-slate-800"></tbody></table></div>
+          </div>
+        </div>
+      </section>
+
       <!-- ABA 2: CATÁLOGO -->
       <section id="sec-catalogo" class="tab-content hidden space-y-6">
         <div class="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3">
@@ -557,15 +872,23 @@
             <p class="text-xs text-slate-500">Histórico completo de débitos e lançamentos no sistema</p>
           </div>
 
-          <div class="flex items-center gap-2">
+          <div class="grid grid-cols-2 sm:flex sm:flex-wrap items-center gap-2 w-full sm:w-auto">
+            <input id="filtro-extrato-busca" type="search" oninput="renderExtratoGeral()" placeholder="Buscar cliente ou descrição" class="col-span-2 sm:w-52 py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs">
             <select id="filtro-extrato-tipo" onchange="renderExtratoGeral()" class="py-2 px-3 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-medium">
-              <option value="todos">Todos os Tipos</option>
-              <option value="compra">Apenas Débitos (Compras)</option>
-              <option value="pagamento">Apenas Créditos (Pagamentos)</option>
+              <option value="todos">Todos os Tipos</option><option value="compra">Apenas Débitos</option><option value="pagamento">Apenas Créditos</option>
             </select>
+            <input id="filtro-extrato-inicio" type="date" onchange="renderExtratoGeral()" aria-label="Data inicial" class="min-w-0 py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs">
+            <input id="filtro-extrato-fim" type="date" onchange="renderExtratoGeral()" aria-label="Data final" class="min-w-0 py-2 px-2 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs">
+            <button onclick="limparFiltrosExtrato()" class="px-3 py-2 rounded-xl border border-slate-200 dark:border-slate-700 text-xs font-semibold hover:bg-slate-100 dark:hover:bg-slate-800">Limpar</button>
+            <button onclick="exportarExtratoPDF()" class="col-span-2 sm:col-span-1 px-4 py-2 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold shadow-sm flex items-center justify-center gap-2"><i class="fa-solid fa-file-pdf"></i> Exportar PDF</button>
           </div>
         </div>
 
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="extrato-resumo">
+          <div class="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-4"><p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Lançamentos exibidos</p><p id="extrato-qtd" class="text-xl font-black mt-1">0</p></div>
+          <div class="rounded-2xl border border-rose-100 dark:border-rose-900/50 bg-rose-50/70 dark:bg-rose-950/20 p-4"><p class="text-[10px] uppercase tracking-wider font-bold text-rose-600">Total de débitos</p><p id="extrato-debitos" class="text-xl font-black text-rose-700 dark:text-rose-300 mt-1">R$ 0,00</p></div>
+          <div class="rounded-2xl border border-emerald-100 dark:border-emerald-900/50 bg-emerald-50/70 dark:bg-emerald-950/20 p-4"><p class="text-[10px] uppercase tracking-wider font-bold text-emerald-700">Total de créditos</p><p id="extrato-creditos" class="text-xl font-black text-emerald-700 dark:text-emerald-300 mt-1">R$ 0,00</p></div>
+        </div>
         <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm overflow-hidden">
           <div class="overflow-x-auto">
             <table class="w-full text-left border-collapse min-w-[600px]">
@@ -701,6 +1024,7 @@
       </div>
 
       <div class="grid grid-cols-2 gap-3">
+        <button onclick="selecionarOpcaoMais('encomendas')" class="p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-900 text-left flex items-center gap-3"><div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-900 text-emerald-700 flex items-center justify-center"><i class="fa-solid fa-clipboard-list"></i></div><div><p class="font-bold text-xs">Encomendas</p><p class="text-[10px] text-slate-400">Pedidos e estoque</p></div></button>
         <button onclick="selecionarOpcaoMais('categorias')" class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 text-left flex items-center gap-3 transition-all hover:border-executive-primary">
           <div class="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center"><i class="fa-solid fa-tags"></i></div>
           <div><p class="font-bold text-xs text-slate-800 dark:text-slate-200">Categorias</p><p class="text-[10px] text-slate-400">Organizar fios</p></div>
@@ -858,6 +1182,8 @@
       produtos: {},
       categorias: {},
       transacoes: {},
+      encomendas: {},
+      movimentacoesEstoque: {},
       clienteSelecionadoId: null
     };
 
@@ -885,6 +1211,7 @@
       window.appState.clientes = snapshot.val() || {};
       window.renderClientes();
       window.popularSelectsFioDireto?.();
+      window.popularSelectsEncomenda?.();
       window.atualizarEstatisticas();
       if (window.appState.clienteSelecionadoId) window.renderDetalhesCliente();
     });
@@ -894,6 +1221,7 @@
       window.renderProdutos();
       window.popularSelectProdutosCompra();
       window.popularSelectsFioDireto?.();
+      window.renderEncomendas?.();
       window.atualizarEstatisticas();
     });
 
@@ -903,6 +1231,16 @@
       window.atualizarFiltroCategorias();
       window.popularSelectProdutosCompra();
       window.atualizarEstatisticas();
+    });
+
+    onValue(ref(db, 'movimentacoesEstoque'), (snapshot) => {
+      window.appState.movimentacoesEstoque = snapshot.val() || {};
+    });
+
+    onValue(ref(db, 'encomendas'), (snapshot) => {
+      window.appState.encomendas = snapshot.val() || {};
+      window.renderEncomendas?.();
+      window.renderControleEstoque?.();
     });
 
     onValue(ref(db, 'transacoes'), (snapshot) => {
@@ -924,6 +1262,24 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script>
+
+    function dataLocalISO(data = new Date()) {
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const dia = String(data.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    }
+    function mesLocalISO(data = new Date()) {
+      return dataLocalISO(data).slice(0, 7);
+    }
+
+    function mostrarPainelEncomendas(view, botao) {
+      document.querySelectorAll('[data-enc-panel]').forEach(p => p.classList.toggle('hidden', p.dataset.encPanel !== view));
+      document.querySelectorAll('[data-enc-view]').forEach(b => b.classList.toggle('active', b.dataset.encView === view));
+      if (botao) botao.blur();
+      try { sessionStorage.setItem('tucuvori_enc_view', view); } catch(e) {}
+    }
+
     function switchTab(tabName) {
       document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
       document.querySelectorAll('.tab-btn').forEach(el => {
@@ -970,6 +1326,15 @@
       toggleMenuMaisMobile();
       switchTab(tabName);
     }
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') {
+        document.getElementById('modal-mais-mobile')?.classList.add('hidden');
+        document.getElementById('modal-pagamento-parcial')?.classList.add('hidden');
+      }
+    });
+    document.getElementById('modal-mais-mobile')?.addEventListener('click', (event) => {
+      if (event.target.id === 'modal-mais-mobile') toggleMenuMaisMobile();
+    });
 
     const themeToggleBtn = document.getElementById('theme-toggle');
     const darkIcon = document.getElementById('theme-toggle-dark-icon');
@@ -1598,8 +1963,47 @@
       if (confirm('Excluir este lançamento?')) window.dbRemove(window.dbRef(window.db, `transacoes/${transacaoId}`));
     }
 
-    function exportarContaPDF() { window.print(); }
-    function exportarRelatorioPDF() { window.print(); }
+    function htmlSeguroRelatorio(valor) { return escaparHTML(String(valor ?? '—')); }
+    function dataRelatorio(valor) { if (!valor) return '—'; const d = new Date(valor); return Number.isNaN(d.getTime()) ? '—' : d.toLocaleString('pt-BR'); }
+    function abrirRelatorioPDF(titulo, subtitulo, resumo, linhas, colunas) {
+      const janela = window.open('', '_blank');
+      if (!janela) { alert('Permita a abertura de pop-ups para gerar o PDF.'); return; }
+      const th = colunas.map(c => `<th>${htmlSeguroRelatorio(c)}</th>`).join('');
+      const trs = linhas.length ? linhas.map(l => `<tr>${l.map(v => `<td>${v}</td>`).join('')}</tr>`).join('') : `<tr><td colspan="${colunas.length}" class="vazio">Nenhum registro encontrado para os filtros selecionados.</td></tr>`;
+      janela.document.write(`<!DOCTYPE html><html lang="pt-BR"><head><meta charset="UTF-8"><title>${htmlSeguroRelatorio(titulo)}</title><style>
+        *{box-sizing:border-box}body{font-family:Arial,sans-serif;color:#17211c;margin:0;padding:32px;font-size:11px}header{border-bottom:3px solid #246044;padding-bottom:16px;margin-bottom:20px} .marca{font-size:10px;letter-spacing:2px;color:#246044;font-weight:bold;text-transform:uppercase}h1{font-size:22px;margin:7px 0 4px;color:#173c2b} .sub{color:#64748b;font-size:11px}.data{float:right;color:#64748b;font-size:10px}.resumo{display:grid;grid-template-columns:repeat(${Math.min(Math.max(resumo.length,1),4)},1fr);gap:9px;margin:18px 0 22px}.kpi{border:1px solid #dbe5de;border-radius:8px;padding:11px}.kpi small{display:block;color:#64748b;text-transform:uppercase;font-size:8px;font-weight:bold;letter-spacing:.6px}.kpi strong{display:block;font-size:15px;margin-top:6px;color:#173c2b}table{width:100%;border-collapse:collapse;margin-top:12px}thead{display:table-header-group}th{background:#eaf2ed;color:#244d38;text-align:left;text-transform:uppercase;font-size:8px;letter-spacing:.5px;padding:10px 8px;border-bottom:1px solid #cbd9cf}td{padding:9px 8px;border-bottom:1px solid #e5e7eb;vertical-align:top}tr{page-break-inside:avoid}.vazio{text-align:center;padding:25px;color:#64748b}.positivo{color:#b42318;font-weight:bold}.negativo{color:#137547;font-weight:bold}footer{margin-top:22px;padding-top:10px;border-top:1px solid #dbe5de;color:#64748b;font-size:9px;display:flex;justify-content:space-between}.acoes{margin:18px 0}.acoes button{background:#246044;color:#fff;border:0;border-radius:7px;padding:10px 16px;font-weight:bold;cursor:pointer}@page{size:A4;margin:14mm}@media print{body{padding:0}.acoes{display:none}.data{float:right}}
+      </style></head><body><header><span class="data">Gerado em ${new Date().toLocaleString('pt-BR')}</span><div class="marca">TUCUVORI · Controle de Guias</div><h1>${htmlSeguroRelatorio(titulo)}</h1><div class="sub">${htmlSeguroRelatorio(subtitulo)}</div></header><section class="resumo">${resumo.map(r=>`<div class="kpi"><small>${htmlSeguroRelatorio(r[0])}</small><strong>${htmlSeguroRelatorio(r[1])}</strong></div>`).join('')}</section><table><thead><tr>${th}</tr></thead><tbody>${trs}</tbody></table><footer><span>Documento gerado pelo sistema de Controle de Guias</span><span>Uso administrativo · TUCUVORI</span></footer><div class="acoes"><button onclick="window.print()">Salvar / Imprimir PDF</button></div><script>window.onload=()=>setTimeout(()=>window.print(),350)<\/script></body></html>`);
+      janela.document.close();
+    }
+    function exportarContaPDF() {
+      const id=window.appState.clienteSelecionadoId, c=(window.appState.clientes||{})[id]; if(!c)return;
+      const ts=listarTransacoesNormalizadas().filter(t=>String(t.clienteId??'')===String(id)).sort((a,b)=>new Date(a.data||0)-new Date(b.data||0));
+      let deb=0,cred=0; ts.forEach(t=>t.tipoNormalizado==='compra'?deb+=t.valorNumerico:cred+=t.valorNumerico);
+      const linhas=ts.map(t=>[htmlSeguroRelatorio(dataRelatorio(t.data)),htmlSeguroRelatorio(t.tipoNormalizado==='compra'?'Débito':'Crédito'),htmlSeguroRelatorio(t.descricao||t.observacao||(t.tipoNormalizado==='compra'?'Compra':'Pagamento')),`<span class="${t.tipoNormalizado==='compra'?'positivo':'negativo'}">${htmlSeguroRelatorio(formatarMoeda(t.valorNumerico))}</span>`]);
+      abrirRelatorioPDF('Extrato individual',`Cliente: ${c.nome} · Telefone: ${c.telefone||'Não informado'}`,[['Total de débitos',formatarMoeda(deb)],['Total de créditos',formatarMoeda(cred)],['Saldo atual',formatarMoeda(deb-cred)]],linhas,['Data e hora','Tipo','Descrição / detalhes','Valor']);
+    }
+    function exportarRelatorioPDF() {
+      const clientes=window.appState.clientes||{};
+      const linhas=Object.entries(clientes).map(([id,c])=>{const saldo=calcularSaldoCliente(id);return [htmlSeguroRelatorio(c.nome),htmlSeguroRelatorio(c.telefone||'—'),htmlSeguroRelatorio(c.tipo==='filho-santo'?'Filho de Santo':'Assistência'),`<b>${htmlSeguroRelatorio(formatarMoeda(saldo))}</b>`,saldo>0?'Pendente':'Quitado'];}).sort((a,b)=>a[0].localeCompare(b[0]));
+      const pendente=Object.keys(clientes).reduce((s,id)=>s+Math.max(0,calcularSaldoCliente(id)),0);
+      abrirRelatorioPDF('Relatório financeiro de clientes','Posição consolidada das contas cadastradas',[['Clientes',String(Object.keys(clientes).length)],['Saldo a receber',formatarMoeda(pendente)],['Data de referência',new Date().toLocaleDateString('pt-BR')]],linhas,['Cliente','Telefone','Tipo','Saldo em aberto','Situação']);
+    }
+    function obterListaFiltradaExtrato() {
+      const tipo=document.getElementById('filtro-extrato-tipo')?.value||'todos', busca=(document.getElementById('filtro-extrato-busca')?.value||'').trim().toLocaleLowerCase('pt-BR');
+      const inicio=document.getElementById('filtro-extrato-inicio')?.value, fim=document.getElementById('filtro-extrato-fim')?.value, clientes=window.appState.clientes||{};
+      return listarTransacoesNormalizadas().filter(t=>{
+        if(tipo!=='todos'&&t.tipoNormalizado!==tipo)return false;
+        const d=t.data?new Date(t.data):null; if(inicio&&(!d||d<new Date(inicio+'T00:00:00')))return false; if(fim&&(!d||d>new Date(fim+'T23:59:59')))return false;
+        const nome=(clientes[t.clienteId]||{}).nome||'Cliente Removido'; const texto=`${nome} ${t.descricao||''} ${t.observacao||''} ${t.formaPagamento||''}`.toLocaleLowerCase('pt-BR'); return !busca||texto.includes(busca);
+      }).sort((a,b)=>new Date(b.data||0)-new Date(a.data||0));
+    }
+    function limparFiltrosExtrato(){['filtro-extrato-busca','filtro-extrato-inicio','filtro-extrato-fim'].forEach(id=>{const e=document.getElementById(id);if(e)e.value='';});const t=document.getElementById('filtro-extrato-tipo');if(t)t.value='todos';renderExtratoGeral();}
+    function exportarExtratoPDF(){
+      const lista=obterListaFiltradaExtrato(), clientes=window.appState.clientes||{}; let deb=0,cred=0;
+      const linhas=lista.map(t=>{const compra=t.tipoNormalizado==='compra';if(compra)deb+=t.valorNumerico;else cred+=t.valorNumerico;return [htmlSeguroRelatorio(dataRelatorio(t.data)),htmlSeguroRelatorio((clientes[t.clienteId]||{}).nome||'Cliente Removido'),compra?'Débito':'Crédito',htmlSeguroRelatorio(t.descricao||t.observacao||t.formaPagamento||(compra?'Compra':'Pagamento')),`<span class="${compra?'positivo':'negativo'}">${htmlSeguroRelatorio(formatarMoeda(t.valorNumerico))}</span>`];});
+      const periodo=[document.getElementById('filtro-extrato-inicio')?.value,document.getElementById('filtro-extrato-fim')?.value].filter(Boolean).join(' até ')||'Todo o período';
+      abrirRelatorioPDF('Extrato geral de transações',`Período: ${periodo} · Filtro: ${document.getElementById('filtro-extrato-tipo')?.selectedOptions[0]?.textContent||'Todos'}`,[['Lançamentos',String(lista.length)],['Total de débitos',formatarMoeda(deb)],['Total de créditos',formatarMoeda(cred)],['Movimento líquido',formatarMoeda(cred-deb)]],linhas,['Data e hora','Cliente','Tipo','Descrição / forma','Valor']);
+    }
 
     function renderProdutos() {
       const grid = document.getElementById('grid-produtos');
@@ -1735,31 +2139,191 @@
     }
 
     function renderExtratoGeral() {
-      const tbody = document.getElementById('tbody-extrato-geral');
-      if (!tbody) return;
-      const filtroTipo = document.getElementById('filtro-extrato-tipo').value;
-      const clientes = window.appState.clientes || {};
-      const lista = listarTransacoesNormalizadas().filter(t => filtroTipo === 'todos' || t.tipoNormalizado === filtroTipo);
-
-      lista.sort((a, b) => new Date(b.data || 0) - new Date(a.data || 0));
-      if (lista.length === 0) { tbody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">Nenhum registro.</td></tr>`; return; }
-
-      tbody.innerHTML = lista.map(t => {
-        const cNome = (clientes[t.clienteId] || {}).nome || 'Cliente Removido';
-        const isCompra = t.tipoNormalizado === 'compra';
-        return `
-          <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-            <td class="p-3 text-slate-500 whitespace-nowrap">${t.data ? new Date(t.data).toLocaleString('pt-BR') : '—'}</td>
-            <td class="p-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">${escaparHTML(cNome)}</td>
-            <td class="p-3 whitespace-nowrap"><span class="px-2 py-0.5 rounded font-bold text-[10px] ${isCompra ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}">${isCompra ? 'DÉBITO' : 'CRÉDITO'}</span></td>
-            <td class="p-3 text-slate-700 dark:text-slate-300">${escaparHTML(t.descricao || (isCompra ? 'Compra' : 'Pagamento'))}</td>
-            <td class="p-3 text-right font-bold whitespace-nowrap ${isCompra ? 'text-rose-600' : 'text-emerald-600'}">${isCompra ? '+ ' : '- '}${formatarMoeda(t.valorNumerico)}</td>
-          </tr>`;
-      }).join('');
+      const tbody=document.getElementById('tbody-extrato-geral'); if(!tbody)return;
+      const clientes=window.appState.clientes||{}, lista=obterListaFiltradaExtrato(); let deb=0,cred=0;
+      lista.forEach(t=>t.tipoNormalizado==='compra'?deb+=t.valorNumerico:cred+=t.valorNumerico);
+      document.getElementById('extrato-qtd').textContent=lista.length;
+      document.getElementById('extrato-debitos').textContent=formatarMoeda(deb);
+      document.getElementById('extrato-creditos').textContent=formatarMoeda(cred);
+      if(!lista.length){tbody.innerHTML='<tr><td colspan="5" class="p-8 text-center text-slate-400 text-xs">Nenhum registro encontrado. Ajuste os filtros ou limpe a pesquisa.</td></tr>';return;}
+      tbody.innerHTML=lista.map(t=>{const nome=(clientes[t.clienteId]||{}).nome||'Cliente Removido', compra=t.tipoNormalizado==='compra';return `<tr class="hover:bg-emerald-50/50 dark:hover:bg-slate-800/60 transition-colors"><td class="p-3 text-slate-500 whitespace-nowrap">${htmlSeguroRelatorio(dataRelatorio(t.data))}</td><td class="p-3 font-semibold text-slate-900 dark:text-white whitespace-nowrap">${htmlSeguroRelatorio(nome)}</td><td class="p-3 whitespace-nowrap"><span class="px-2.5 py-1 rounded-full font-bold text-[10px] ${compra?'bg-rose-100 text-rose-700 dark:bg-rose-950 dark:text-rose-300':'bg-emerald-100 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300'}">${compra?'DÉBITO':'CRÉDITO'}</span></td><td class="p-3 text-slate-700 dark:text-slate-300">${htmlSeguroRelatorio(t.descricao||t.observacao||t.formaPagamento||(compra?'Compra':'Pagamento'))}</td><td class="p-3 text-right font-bold whitespace-nowrap ${compra?'text-rose-600':'text-emerald-600'}">${compra?'+ ':'− '}${formatarMoeda(t.valorNumerico)}</td></tr>`;}).join('');
     }
 
     function escaparHTML(str) {
       return String(str ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+    }
+
+    // ENCOMENDAS, RESERVAS, PRODUÇÃO SOB DEMANDA E AGENDA FINANCEIRA
+    function obterPedidosAtivos(produtoId) {
+      return Object.entries(window.appState.encomendas || {})
+        .map(([id,e]) => ({id,...e}))
+        .filter(e => e.produtoId === produtoId && !['entregue','cancelado'].includes(e.status))
+        .sort((a,b) => String(a.criadoEm || '').localeCompare(String(b.criadoEm || '')) || a.id.localeCompare(b.id));
+    }
+    function calcularAlocacaoEstoque(produtoId) {
+      const fisico = Math.max(0, Number((window.appState.produtos || {})[produtoId]?.estoque) || 0);
+      let restante = fisico;
+      const porEncomenda = {};
+      const pedidos = obterPedidosAtivos(produtoId);
+      pedidos.forEach(e => {
+        const qtd = Math.max(0, Number(e.quantidade) || 0);
+        const separado = Math.min(restante, qtd);
+        restante -= separado;
+        porEncomenda[e.id] = { separado, faltaProduzir: Math.max(0, qtd-separado) };
+      });
+      return {porEncomenda, pedidos, fisico};
+    }
+    function obterResumoEstoque(produtoId) {
+      const p = (window.appState.produtos || {})[produtoId] || {};
+      const fisico = Math.max(0, Number(p.estoque) || 0);
+      const pedidos = obterPedidosAtivos(produtoId);
+      const reservado = pedidos.reduce((s,e) => s + Math.max(0, Number(e.quantidade)||0), 0);
+      return { fisico, reservado, livre: Math.max(0, fisico-reservado), aProduzir: Math.max(0, reservado-fisico) };
+    }
+    function saldoEncomenda(e) { return Math.max(0, Number(e.total || (Number(e.quantidade||0)*Number(e.valorUnitario||0))) - Number(e.pago||0)); }
+    function dataBR(iso) { if(!iso) return '—'; const p=String(iso).slice(0,10).split('-'); return p.length===3 ? `${p[2]}/${p[1]}/${p[0]}` : iso; }
+    function statusFinanceiroEncomenda(e) {
+      if(e.status==='cancelado') return 'CANCELADA';
+      if(e.status==='entregue') return 'ENTREGUE';
+      if(saldoEncomenda(e)<=0) return 'PAGA';
+      return e.vencimento && e.vencimento < dataLocalISO() ? 'EM ATRASO' : 'PENDENTE';
+    }
+    function popularSelectsEncomenda() {
+      const clientes = window.appState.clientes || {}, produtos = window.appState.produtos || {};
+      const c = document.getElementById('enc-cliente'), p = document.getElementById('enc-produto'), pp = document.getElementById('prod-produto');
+      if (c) { const atual=c.value; c.innerHTML='<option value="">Selecione</option>'+Object.entries(clientes).sort((a,b)=>(a[1].nome||'').localeCompare(b[1].nome||'')).map(([id,v])=>`<option value="${id}">${escaparHTML(v.nome)}</option>`).join(''); c.value=atual; }
+      const opts='<option value="">Selecione</option>'+Object.entries(produtos).sort((a,b)=>(a[1].nome||'').localeCompare(b[1].nome||'')).map(([id,v])=>`<option value="${id}">${escaparHTML(v.nome)} (${escaparHTML(v.sku||'')})</option>`).join('');
+      if(p){const atual=p.value;p.innerHTML=opts;p.value=atual;} if(pp){const atual=pp.value;pp.innerHTML=opts;pp.value=atual;}
+    }
+    function atualizarResumoEstoqueEncomenda() {
+      const id=document.getElementById('enc-produto')?.value, qtd=Number(document.getElementById('enc-qtd')?.value)||0, el=document.getElementById('enc-resumo-estoque');
+      if(!el)return; if(!id){el.textContent='Selecione uma guia para consultar o estoque.';return;}
+      const r=obterResumoEstoque(id), falta=Math.max(0,qtd-r.livre);
+      el.innerHTML=`Estoque físico: <b>${r.fisico}</b> · Reservado: <b>${r.reservado}</b> · Livre: <b>${r.livre}</b><br>Esta encomenda: <b>${qtd}</b> unidade(s). ${falta?`<span class="font-bold text-amber-700">Produção necessária para este novo pedido: ${falta} unidade(s).</span>`:'<span class="font-bold text-emerald-700">Estoque livre suficiente para reservar este pedido.</span>'} A encomenda será registrada mesmo que exija produção; a entrega só será liberada quando houver quantidade física suficiente.`;
+      const prod=window.appState.produtos[id], campo=document.getElementById('enc-valor'); if(prod && campo && !campo.value) campo.value=Number(prod.precoUnitario||0).toFixed(2);
+    }
+    async function salvarEncomenda(e) {
+      e.preventDefault();
+      const clienteId=document.getElementById('enc-cliente').value, produtoId=document.getElementById('enc-produto').value;
+      const quantidade=Number(document.getElementById('enc-qtd').value), valorUnitario=Number(document.getElementById('enc-valor').value);
+      const mes=document.getElementById('enc-mes').value, vencimento=document.getElementById('enc-vencimento').value;
+      if(!clienteId||!produtoId||!Number.isInteger(quantidade)||quantidade<1||!mes||!vencimento)return alert('Preencha os campos obrigatórios. A quantidade deve ser um número inteiro maior que zero.');
+      if(!Number.isFinite(valorUnitario)||valorUnitario<0)return alert('Informe um valor unitário válido.');
+      if(vencimento.slice(0,7)!==mes)return alert('A data prevista de pagamento precisa estar dentro do mês de referência da encomenda.');
+      const cliente=window.appState.clientes[clienteId], produto=window.appState.produtos[produtoId];
+      if(!cliente||!produto)return alert('Pessoa ou guia não encontrada. Atualize a página e tente novamente.');
+      const payload={clienteId,clienteNome:cliente.nome||'Pessoa',produtoId,produtoNome:produto.nome||'Guia',quantidade,valorUnitario,total:Number((quantidade*valorUnitario).toFixed(2)),pago:0,pagamentos:{},mes,vencimento,observacoes:document.getElementById('enc-obs').value.trim(),status:'pendente',criadoEm:new Date().toISOString()};
+      try {
+        await window.dbSet(window.dbPush(window.dbRef(window.db,'encomendas')),payload);
+        document.getElementById('form-encomenda').reset(); document.getElementById('enc-mes').value=mesLocalISO(); document.getElementById('enc-vencimento').value='';
+        popularSelectsEncomenda(); atualizarResumoEstoqueEncomenda(); alert('Encomenda registrada. O estoque foi reservado automaticamente e qualquer falta entrou na fila de produção sob demanda.');
+      } catch(err){alert('Não foi possível salvar a encomenda: '+err.message);}
+    }
+    async function registrarProducao(e) {
+      e.preventDefault();
+      const id=document.getElementById('prod-produto').value, qtd=Number(document.getElementById('prod-qtd').value), data=document.getElementById('prod-data').value;
+      if(!id||!Number.isInteger(qtd)||qtd<1||!data)return alert('Informe a guia, uma quantidade inteira positiva e a data da produção.');
+      const p=window.appState.produtos[id]; if(!p)return alert('Guia não encontrada no catálogo.');
+      const agora=new Date().toISOString();
+      try {
+        // Atualiza o estoque físico e registra a entrada de produção no histórico.
+        await window.dbUpdate(window.dbRef(window.db,`produtos/${id}`),{estoque:(Number(p.estoque)||0)+qtd,atualizadoEm:agora});
+        await window.dbSet(window.dbPush(window.dbRef(window.db,'movimentacoesEstoque')),{produtoId:id,produtoNome:p.nome,tipo:'producao',quantidade:qtd,data,observacoes:document.getElementById('prod-obs').value.trim(),criadoEm:agora});
+        document.getElementById('form-producao').reset(); document.getElementById('prod-data').value=dataLocalISO(); alert('Produção registrada. O estoque foi atualizado e a fila de encomendas foi recalculada automaticamente.');
+      } catch(err){alert('Erro ao registrar produção: '+err.message);}
+    }
+    function renderControleEstoque() {
+      popularSelectsEncomenda(); const produtos=window.appState.produtos||{}, tbody=document.getElementById('tbody-estoque'); if(!tbody)return;
+      let total=0,res=0,livre=0;
+      const rows=Object.entries(produtos).map(([id,p])=>{const r=obterResumoEstoque(id);total+=r.fisico;res+=r.reservado;livre+=r.livre;return `<tr><td class="p-3 font-semibold">${escaparHTML(p.nome)}<span class="block text-[10px] text-slate-400">${escaparHTML(p.sku||'')}</span></td><td class="p-3 text-center">${r.fisico}</td><td class="p-3 text-center text-amber-600 font-bold">${r.reservado}</td><td class="p-3 text-center text-emerald-600 font-bold">${r.livre}</td><td class="p-3 text-center ${r.aProduzir?'text-rose-600 font-bold':'text-slate-400'}">${r.aProduzir}</td></tr>`;});
+      tbody.innerHTML=rows.join('')||'<tr><td colspan="5" class="p-6 text-center text-slate-400">Cadastre guias no catálogo para iniciar o controle.</td></tr>';
+      document.getElementById('estoque-total-geral').textContent=total; document.getElementById('estoque-reservado-geral').textContent=res; document.getElementById('estoque-livre-geral').textContent=livre;
+      const fila=document.getElementById('tbody-fila-producao');
+      if(fila){const pendentes=Object.entries(produtos).map(([id,p])=>({id,p,r:obterResumoEstoque(id)})).filter(x=>x.r.aProduzir>0);fila.innerHTML=pendentes.map(x=>`<tr><td class="p-3 font-semibold">${escaparHTML(x.p.nome)}</td><td class="p-3 text-center">${x.r.reservado}</td><td class="p-3 text-center">${x.r.fisico}</td><td class="p-3 text-center font-black text-rose-600">${x.r.aProduzir}</td></tr>`).join('')||'<tr><td colspan="4" class="p-5 text-center text-slate-400">Nenhuma produção pendente. O estoque atual atende às reservas.</td></tr>';}
+      atualizarResumoEstoqueEncomenda();
+    }
+    function renderAgendaPagamentos() {
+      const pedidos=Object.entries(window.appState.encomendas||{}).map(([id,e])=>({id,...e}));
+      const pendentes=pedidos.filter(e=>e.status!=='cancelado'&&saldoEncomenda(e)>0&&e.vencimento).sort((a,b)=>String(a.vencimento).localeCompare(String(b.vencimento)));
+      const hoje=dataLocalISO(), mes=mesLocalISO();
+      const atrasados=pendentes.filter(e=>e.vencimento<hoje), doMes=pendentes.filter(e=>String(e.vencimento).slice(0,7)===mes);
+      const recebido=pedidos.reduce((s,e)=>s+Number(e.pago||0),0);
+      const totalAtrasado=atrasados.reduce((s,e)=>s+saldoEncomenda(e),0), totalMes=doMes.reduce((s,e)=>s+saldoEncomenda(e),0);
+      const elA=document.getElementById('enc-total-atrasado'),elQ=document.getElementById('enc-qtd-atrasadas'),elM=document.getElementById('enc-total-mes'),elR=document.getElementById('enc-total-recebido');
+      if(elA)elA.textContent=formatarMoeda(totalAtrasado); if(elQ)elQ.textContent=`${atrasados.length} encomenda(s) em atraso`; if(elM)elM.textContent=formatarMoeda(totalMes); if(elR)elR.textContent=formatarMoeda(recebido);
+      const agenda=document.getElementById('lista-agenda-pagamentos'); if(!agenda)return;
+      agenda.innerHTML=pendentes.slice(0,12).map(e=>{const atraso=e.vencimento<hoje;return `<div class="p-3 flex items-center justify-between gap-3"><div class="min-w-0"><p class="text-xs font-bold truncate">${escaparHTML(e.clienteNome||'Pessoa')} · ${escaparHTML(e.produtoNome||'Guia')}</p><p class="text-[10px] ${atraso?'text-rose-600 font-bold':'text-slate-500'}">${atraso?'Vencido':'Vence'} em ${dataBR(e.vencimento)} · ${escaparHTML(e.mes||'')}</p></div><div class="text-right shrink-0"><p class="text-xs font-black ${atraso?'text-rose-600':'text-amber-600'}">${formatarMoeda(saldoEncomenda(e))}</p><button onclick="registrarPagamentoEncomenda('${e.id}')" class="text-[10px] font-bold text-emerald-700 underline">Registrar recebimento</button></div></div>`;}).join('')||'<p class="p-4 text-xs text-slate-400">Nenhum vencimento pendente.</p>';
+    }
+    function renderEncomendas() {
+      const tbody=document.getElementById('tbody-encomendas'); if(!tbody)return;
+      popularSelectsEncomenda(); renderControleEstoque(); renderAgendaPagamentos();
+      const filtro=document.getElementById('filtro-encomenda-status')?.value||'ativas', mes=document.getElementById('filtro-encomenda-mes')?.value||'';
+      let lista=Object.entries(window.appState.encomendas||{}).map(([id,e])=>({id,...e}));
+      if(filtro==='ativas')lista=lista.filter(e=>!['entregue','cancelado'].includes(e.status));
+      else if(filtro==='atrasadas')lista=lista.filter(e=>saldoEncomenda(e)>0&&e.status!=='cancelado'&&e.vencimento<dataLocalISO());
+      else if(filtro==='pendente')lista=lista.filter(e=>saldoEncomenda(e)>0&&e.status!=='cancelado');
+      else if(filtro==='pago')lista=lista.filter(e=>saldoEncomenda(e)<=0&&e.status!=='cancelado');
+      else if(filtro!=='todas')lista=lista.filter(e=>e.status===filtro);
+      if(mes)lista=lista.filter(e=>e.mes===mes); lista.sort((a,b)=>String(a.vencimento).localeCompare(String(b.vencimento)));
+      tbody.innerHTML=lista.map(e=>{
+        const saldo=saldoEncomenda(e), financeiro=statusFinanceiroEncomenda(e), aloc=calcularAlocacaoEstoque(e.produtoId).porEncomenda[e.id]||{separado:0,faltaProduzir:0};
+        const producao=['entregue','cancelado'].includes(e.status)?'—':aloc.faltaProduzir>0?`Produzir ${aloc.faltaProduzir}`:'Pronto';
+        const badge=financeiro==='EM ATRASO'?'bg-rose-100 text-rose-700':financeiro==='PAGA'?'bg-emerald-100 text-emerald-700':financeiro==='ENTREGUE'?'bg-blue-100 text-blue-700':financeiro==='CANCELADA'?'bg-slate-100 text-slate-600':'bg-amber-100 text-amber-700';
+        const podePagar=e.status!=='cancelado'&&saldo>0;
+        const podeEntregar=!['entregue','cancelado'].includes(e.status);
+        return `<tr><td class="p-3"><b>${escaparHTML(e.clienteNome)}</b><span class="block text-slate-500">${escaparHTML(e.produtoNome)}</span><span class="block text-[10px] ${aloc.faltaProduzir?'text-rose-600':'text-emerald-600'}">${producao}</span></td><td class="p-3 text-center">${Number(e.quantidade)||0}</td><td class="p-3">${escaparHTML(e.mes||'—')}</td><td class="p-3 ${financeiro==='EM ATRASO'?'text-rose-600 font-bold':''}">${dataBR(e.vencimento)}${financeiro==='EM ATRASO'?'<span class="block text-[10px]">Em atraso</span>':''}</td><td class="p-3 text-right">${formatarMoeda(e.total)}</td><td class="p-3 text-right"><b class="text-emerald-600">${formatarMoeda(e.pago||0)}</b><span class="block text-amber-600">Saldo: ${formatarMoeda(saldo)}</span></td><td class="p-3"><span class="px-2 py-1 rounded-lg text-[10px] font-bold ${badge}">${financeiro}</span></td><td class="p-3"><div class="flex flex-wrap gap-1">${podePagar?`<button onclick="registrarPagamentoEncomenda('${e.id}')" class="px-2 py-1 rounded bg-emerald-600 text-white">Receber</button>`:''}<button onclick="verHistoricoPagamentos('${e.id}')" class="px-2 py-1 rounded bg-slate-100 dark:bg-slate-800">Histórico</button>${podeEntregar?`<button onclick="concluirEncomenda('${e.id}')" class="px-2 py-1 rounded bg-blue-600 text-white">Entregar</button><button onclick="cancelarEncomenda('${e.id}')" class="px-2 py-1 rounded bg-rose-100 text-rose-700">Cancelar</button>`:''}</div></td></tr>`;
+      }).join('')||'<tr><td colspan="8" class="p-8 text-center text-slate-400">Nenhuma encomenda encontrada.</td></tr>';
+    }
+    async function registrarPagamentoEncomenda(id) {
+      const e=window.appState.encomendas[id]; if(!e||e.status==='cancelado')return;
+      const saldo=saldoEncomenda(e); if(saldo<=0)return alert('Esta encomenda já está totalmente paga.');
+      const bruto=prompt(`Pessoa: ${e.clienteNome}\nSaldo em aberto: ${formatarMoeda(saldo)}\n\nInforme o valor recebido (R$):`,saldo.toFixed(2)); if(bruto===null)return;
+      const valor=Number(String(bruto).replace(',','.'));
+      if(!Number.isFinite(valor)||valor<=0||valor>saldo+0.000001)return alert('Informe um valor maior que zero e não superior ao saldo em aberto.');
+      const data=prompt('Data em que o pagamento foi recebido (AAAA-MM-DD):',dataLocalISO()); if(data===null)return;
+      if(!/^\d{4}-\d{2}-\d{2}$/.test(data))return alert('Informe a data no formato AAAA-MM-DD.');
+      const forma=prompt('Forma de pagamento (Pix, dinheiro, transferência etc.):','Pix'); if(forma===null)return;
+      const pago=Number((Number(e.pago||0)+valor).toFixed(2)), pagamento={valor:Number(valor.toFixed(2)),data,forma:forma.trim()||'Não informada',registradoEm:new Date().toISOString()};
+      const pagamentoRef=window.dbPush(window.dbRef(window.db,`encomendas/${id}/pagamentos`));
+      const patch={}; patch[`encomendas/${id}/pagamentos/${pagamentoRef.key}`]=pagamento; patch[`encomendas/${id}/pago`]=pago;
+      if(e.status!=='entregue')patch[`encomendas/${id}/status`]=pago>=Number(e.total||0)?'pago':'pendente';
+      try { await window.dbUpdate(window.dbRef(window.db),patch); alert('Recebimento registrado com data e forma de pagamento.'); }
+      catch(err){alert('Não foi possível registrar o pagamento: '+err.message);}
+    }
+    function verHistoricoPagamentos(id) {
+      const e=window.appState.encomendas[id]; if(!e)return;
+      const pagamentos=Object.values(e.pagamentos||{}).sort((a,b)=>String(a.data).localeCompare(String(b.data)));
+      if(!pagamentos.length)return alert(`Histórico de pagamentos — ${e.clienteNome}\n\nNenhum pagamento individual registrado. Total acumulado legado: ${formatarMoeda(e.pago||0)}.`);
+      const linhas=pagamentos.map(p=>`${dataBR(p.data)} · ${p.forma||'—'} · ${formatarMoeda(p.valor)}`).join('\n');
+      alert(`Histórico de pagamentos — ${e.clienteNome}\n${linhas}\n\nTotal recebido: ${formatarMoeda(e.pago||0)}\nSaldo: ${formatarMoeda(saldoEncomenda(e))}`);
+    }
+    async function concluirEncomenda(id) {
+      const e=window.appState.encomendas[id]; if(!e||['entregue','cancelado'].includes(e.status))return;
+      const p=window.appState.produtos[e.produtoId]; if(!p)return alert('Produto não encontrado no catálogo.');
+      const alocacao=calcularAlocacaoEstoque(e.produtoId).porEncomenda[id]||{faltaProduzir:Number(e.quantidade)||0};
+      if(alocacao.faltaProduzir>0)return alert(`Produção pendente para esta encomenda: faltam ${alocacao.faltaProduzir} unidade(s). O sistema preserva o estoque para as encomendas mais antigas; registre a produção antes da entrega.`);
+      if(!confirm(`Confirmar entrega de ${e.quantidade} unidade(s) para ${e.clienteNome}? O estoque físico será baixado e a reserva encerrada.`))return;
+      const agora=new Date().toISOString();
+      try {
+        await window.dbUpdate(window.dbRef(window.db,`produtos/${e.produtoId}`),{estoque:(Number(p.estoque)||0)-Number(e.quantidade),atualizadoEm:agora});
+        await window.dbUpdate(window.dbRef(window.db,`encomendas/${id}`),{status:'entregue',entregueEm:agora});
+        await window.dbSet(window.dbPush(window.dbRef(window.db,'movimentacoesEstoque')),{produtoId:e.produtoId,produtoNome:e.produtoNome,tipo:'entrega',quantidade:-Number(e.quantidade),data:dataLocalISO(),encomendaId:id,criadoEm:agora});
+      } catch(err){alert('Erro ao concluir entrega: '+err.message);}
+    }
+    async function cancelarEncomenda(id) {
+      const e=window.appState.encomendas[id]; if(!e||['cancelado','entregue'].includes(e.status))return;
+      if(!confirm(`Cancelar a encomenda de ${e.clienteNome}? A reserva será liberada automaticamente. Os pagamentos já recebidos permanecerão no histórico para conferência.`))return;
+      await window.dbUpdate(window.dbRef(window.db,`encomendas/${id}`),{status:'cancelado',canceladoEm:new Date().toISOString()});
+    }
+    function exportarRelatorioEncomendas() {
+      const pedidos=Object.entries(window.appState.encomendas||{}).map(([id,e])=>({id,...e}));
+      const linhas=[['ID','Pessoa','Guia','Quantidade','Mês de referência','Pagamento previsto','Total','Pago','Saldo','Status','Produção pendente','Histórico de pagamentos'],...pedidos.map(e=>{
+        const aloc=calcularAlocacaoEstoque(e.produtoId).porEncomenda[e.id]||{faltaProduzir:0};
+        const hist=Object.values(e.pagamentos||{}).map(p=>`${p.data} ${p.forma||''} R$${p.valor}`).join(' | ');
+        return [e.id,e.clienteNome,e.produtoNome,e.quantidade,e.mes,e.vencimento,e.total,e.pago, saldoEncomenda(e),statusFinanceiroEncomenda(e),aloc.faltaProduzir,hist];
+      })];
+      const csv='\ufeff'+linhas.map(l=>l.map(v=>'"'+String(v??'').replace(/"/g,'""')+'"').join(';')).join('\r\n');
+      const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv;charset=utf-8;'}));a.download='relatorio-encomendas-e-pagamentos.csv';a.click();URL.revokeObjectURL(a.href);
     }
 
     // Exportações para Global
@@ -1769,9 +2333,17 @@
       adicionarItemSacola, removerItemSacola, renderSacolaCompra, alterarValorBaseCompra, calcularTotalCompra, salvarLancamentoCompra, preencherQuitarTudo,
       salvarLancamentoPagamento, excluirTransacao, exportarContaPDF, exportarRelatorioPDF, renderProdutos, openModalProduto, closeModalProduto,
       salvarProduto, excluirProduto, renderCategorias, atualizarFiltroCategorias, openModalCategoria, closeModalCategoria, salvarCategoria,
-      excluirCategoria, renderExtratoGeral, renderListaQuitar, abrirPagamentoParcial, fecharPagamentoParcial, confirmarPagamentoParcial,
+      excluirCategoria, renderExtratoGeral, exportarExtratoPDF, limparFiltrosExtrato, renderListaQuitar, abrirPagamentoParcial, fecharPagamentoParcial, confirmarPagamentoParcial,
       confirmarQuitacaoTotal, popularSelectsFioDireto, protegerPessoaSacolaFioDireto, atualizarFioDireto, calcularFioDireto, adicionarFioDiretoSacola,
       removerFioDiretoSacola, renderSacolaFioDireto, salvarFioDireto
+    });
+
+    Object.assign(window, { salvarEncomenda, registrarProducao, renderEncomendas, renderControleEstoque, atualizarResumoEstoqueEncomenda, registrarPagamentoEncomenda, verHistoricoPagamentos, concluirEncomenda, cancelarEncomenda, exportarRelatorioEncomendas });
+    document.addEventListener('DOMContentLoaded', () => {
+      const mes=mesLocalISO(), data=dataLocalISO();
+      const em=document.getElementById('enc-mes'), pd=document.getElementById('prod-data'); if(em)em.value=mes;if(pd)pd.value=data;
+      const fm=document.getElementById('filtro-encomenda-mes'); if(fm)fm.value=mes;
+      popularSelectsEncomenda(); renderEncomendas();
     });
 
     let massaRegistros = [];
@@ -1803,7 +2375,12 @@
     }
     function carregarExemploMassa() {
       const tipo = document.getElementById('massa-tipo').value;
-      document.getElementById('massa-dados').value = modelosMassa[tipo].cabecalho.join(';') + '\nExemplo 1;11999998888;filho-santo;';
+      const exemplos = {
+        clientes: 'Exemplo 1;11999998888;filho-santo;Cadastro de exemplo',
+        produtos: 'GUIA-001;Guia de exemplo;;45,00;3;Produto demonstrativo',
+        transacoes: 'Exemplo 1;compra;Guia de exemplo;1;45,00;45,00;2026-11-16'
+      };
+      document.getElementById('massa-dados').value = modelosMassa[tipo].cabecalho.join(';') + '\n' + exemplos[tipo];
       limparPreviewMassa();
     }
     async function lerArquivoMassa(e) {
@@ -1834,16 +2411,56 @@
     async function importarMassa() {
       const tipo = document.getElementById('massa-tipo').value;
       const btn = document.getElementById('massa-importar-btn');
-      btn.disabled = true; btn.innerText = 'Importando...';
+      if (!massaRegistros.length) return alert('Gere uma prévia antes de importar.');
+      const registros = massaRegistros.filter(r => Object.values(r).some(v => String(v || '').trim()));
+      if (!registros.length) return alert('Não há registros válidos para importar.');
+      btn.disabled = true;
+      const textoOriginal = btn.innerText;
+      btn.innerText = 'Importando...';
       const agora = new Date().toISOString();
-      for (const r of massaRegistros) {
-        if (tipo === 'clientes' && r.nome) {
-          await window.dbSet(window.dbPush(window.dbRef(window.db, 'clientes')), { nome: r.nome, telefone: r.telefone || '', tipo: r.tipo || 'filho-santo', observacoes: r.observacoes || '', criadoEm: agora });
+      let importados = 0, ignorados = 0;
+      try {
+        for (const r of registros) {
+          if (tipo === 'clientes') {
+            if (!r.nome?.trim()) { ignorados++; continue; }
+            const tipoCliente = ['filho-santo','assistencia'].includes(r.tipo) ? r.tipo : 'filho-santo';
+            const payload = { nome:r.nome.trim(), telefone:r.telefone || '', tipo:tipoCliente, observacoes:r.observacoes || '', criadoEm:agora, atualizadoEm:agora };
+            await window.dbSet(window.dbPush(window.dbRef(window.db,'clientes')), payload);
+            importados++;
+          } else if (tipo === 'produtos') {
+            if (!r.nome?.trim() || !r.sku?.trim()) { ignorados++; continue; }
+            const preco = Number(String(r.precoUnitario || '0').replace(',','.'));
+            const estoque = Number.parseInt(r.estoque || '0',10);
+            if (!Number.isFinite(preco) || preco < 0 || !Number.isInteger(estoque) || estoque < 0) { ignorados++; continue; }
+            const categoriaEncontrada = Object.entries(window.appState.categorias || {}).find(([id,c]) =>
+              id === r.categoria || String(c.nome || '').trim().toLowerCase() === String(r.categoria || '').trim().toLowerCase());
+            const payload = { sku:r.sku.trim().toUpperCase(), nome:r.nome.trim(), categoriaId:categoriaEncontrada?.[0] || '', precoUnitario:preco, estoque, descricao:r.descricao || '', criadoEm:agora, atualizadoEm:agora };
+            await window.dbSet(window.dbPush(window.dbRef(window.db,'produtos')), payload);
+            importados++;
+          } else if (tipo === 'transacoes') {
+            const clienteNome = String(r.cliente || '').trim().toLowerCase();
+            const clienteEncontrado = Object.entries(window.appState.clientes || {}).find(([id,c]) =>
+              id === r.cliente || String(c.nome || '').trim().toLowerCase() === clienteNome);
+            const valor = Number(String(r.valor || '').replace(',','.'));
+            const quantidade = Math.max(1, Number.parseInt(r.quantidade || '1',10) || 1);
+            if (!clienteEncontrado || !['compra','pagamento'].includes(String(r.tipo || '').toLowerCase()) || !Number.isFinite(valor) || valor <= 0) { ignorados++; continue; }
+            const data = r.data ? new Date(r.data).toISOString() : agora;
+            const payload = { clienteId:clienteEncontrado[0], tipo:String(r.tipo).toLowerCase(), descricao:r.descricao || (String(r.tipo).toLowerCase()==='compra'?'Compra importada':'Pagamento importado'), quantidade, valor, data };
+            if (payload.tipo === 'compra') {
+              payload.valorUnitario = Number(String(r.valorUnitario || (valor/quantidade)).replace(',','.')) || valor/quantidade;
+            }
+            await window.dbSet(window.dbPush(window.dbRef(window.db,'transacoes')), payload);
+            importados++;
+          }
         }
+        alert(`Importação concluída!\nImportados: ${importados}\nIgnorados: ${ignorados}`);
+        limparMassa();
+      } catch (err) {
+        alert(`A importação foi interrompida após ${importados} registro(s). Verifique o banco antes de tentar novamente.\nErro: ${err.message}`);
+      } finally {
+        btn.disabled = false;
+        btn.innerText = textoOriginal || 'Importar para o Banco';
       }
-      alert('Importação concluída!');
-      limparMassa();
-      btn.innerText = 'Importar para o Banco';
     }
 
     function exportarBackupJSON() {
@@ -1859,6 +2476,8 @@
           await window.dbSet(window.dbRef(window.db, 'produtos'), null);
           await window.dbSet(window.dbRef(window.db, 'categorias'), null);
           await window.dbSet(window.dbRef(window.db, 'transacoes'), null);
+          await window.dbSet(window.dbRef(window.db, 'encomendas'), null);
+          await window.dbSet(window.dbRef(window.db, 'movimentacoesEstoque'), null);
         } else {
           await window.dbSet(window.dbRef(window.db, tipo), null);
         }
